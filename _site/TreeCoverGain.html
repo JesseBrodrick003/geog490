@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Jesse Brodrick" />
+
+<meta name="date" content="2024-03-14" />
+
+<title>Tree Cover change in the Western U.S (50% threshold in 30m resolution)</title>
+
+<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Tree Cover change in the Western U.S (50%
+threshold in 30m resolution)</h1>
+<h4 class="author">Jesse Brodrick</h4>
+<h4 class="date">2024-03-14</h4>
+
+</div>
+
+
+<div
+id="year-tree-cover-gain-mapping-anlaysis-with-global-forest-watch-data"
+class="section level1">
+<h1>20 year Tree Cover Gain Mapping Anlaysis with Global Forest Watch
+Data</h1>
+<div id="reading-in-libraries-and-dataset" class="section level3">
+<h3>Reading in libraries and dataset</h3>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.2     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+## ✔ ggplot2   3.4.4     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.1     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<pre class="r"><code>library(sf)</code></pre>
+<pre><code>## Linking to GEOS 3.10.2, GDAL 3.4.2, PROJ 8.2.1; sf_use_s2() is TRUE</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(RColorBrewer)
+library(tigris)</code></pre>
+<pre><code>## To enable caching of data, set `options(tigris_use_cache = TRUE)`
+## in your R script or .Rprofile.</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(classInt)
+library(spdep)</code></pre>
+<pre><code>## Loading required package: spData
+## To access larger datasets in this package, install the spDataLarge
+## package with: `install.packages(&#39;spDataLarge&#39;,
+## repos=&#39;https://nowosad.github.io/drat/&#39;, type=&#39;source&#39;)`</code></pre>
+<pre class="r"><code>getwd()</code></pre>
+<pre><code>## [1] &quot;/Users/jessebrodrick/Desktop/490Pro/GEOG490&quot;</code></pre>
+<pre class="r"><code>df &lt;- read_csv(&quot;/Users/jessebrodrick/Desktop/490Pro/data/GlblFW/CTCL1.csv&quot;)</code></pre>
+<pre><code>## Rows: 25184 Columns: 30
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr  (3): country, subnational1, subnational2
+## dbl (27): threshold, area_ha, extent_2000_ha, extent_2010_ha, gain_2000_2020...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div id="basemap-and-projection" class="section level2">
+<h2>Basemap and projection</h2>
+<pre class="r"><code># Options to return tigris objects as sf objects
+options(tigris_class = &quot;sf&quot;)
+options(tigris_use_cache = TRUE)
+
+# Obtain state boundaries
+states_sf &lt;- states(cb = TRUE)</code></pre>
+<pre><code>## Retrieving data for the year 2021</code></pre>
+<pre class="r"><code># Obtain county boundaries
+counties_sf &lt;- counties(cb = TRUE)</code></pre>
+<pre><code>## Retrieving data for the year 2021</code></pre>
+<pre class="r"><code># Filter for western states and their counties
+western_states &lt;- c(&quot;Washington&quot;, &quot;Oregon&quot;, &quot;California&quot;, &quot;Idaho&quot;, &quot;Nevada&quot;,
+                    &quot;Montana&quot;, &quot;Utah&quot;, &quot;Arizona&quot;, &quot;Wyoming&quot;, &quot;Colorado&quot;, &quot;New Mexico&quot;,
+                    &quot;North Dakota&quot;, &quot;South Dakota&quot;, &quot;Nebraska&quot;, &quot;Kansas&quot;, &quot;Oklahoma&quot;, &quot;Texas&quot;)
+
+# Filter state and counties for western states sf
+wus_states_sf &lt;- states_sf[states_sf$NAME %in% western_states, ]
+
+wus_counties_sf &lt;- counties_sf[counties_sf$STATE_NAME %in% western_states, ]
+
+# Check plot
+ggplot() +
+  geom_sf(data = wus_states_sf, fill = NA, color = &quot;black&quot;, size = 0.6) +
+  geom_sf(data = wus_counties_sf, fill = NA, color = &quot;grey&quot;, size = 0.3) +
+  theme_minimal() </code></pre>
+<p><img src="TreeCoverGain_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code># Projection
+laea = st_crs(&quot;+proj=laea +lat_0=30 +lon_0=-100&quot;) # Lambert Azimuthal Equal Area
+
+wus_states_sf_pro = st_transform(wus_states_sf, laea)
+
+wus_counties_sf_pro = st_transform(wus_counties_sf, laea)
+
+# Check plot
+ggplot() +
+  geom_sf(data = wus_states_sf_pro, fill = NA, color = &quot;black&quot;, size = 0.6) +
+  geom_sf(data = wus_counties_sf_pro, fill = NA, color = &quot;grey&quot;, size = 0.3) +
+  theme_minimal() +
+  labs(title = &quot;Western US States and Counties&quot;)</code></pre>
+<p><img src="TreeCoverGain_files/figure-html/unnamed-chunk-2-2.png" width="672" />
+## Subset and merge Global Forest Watch data and projected US Census
+boundaries</p>
+<div
+id="global-forest-watch-provides-thresholds-or-amount-of-tree-canopy-coverage-density-of-30m-resolution-for-0-10-20-30-50-and-75-percent-for-20-years-of-forest-cover-gainloss-in-hecatares."
+class="section level3">
+<h3>Global Forest watch provides thresholds or amount of tree canopy
+coverage (density of 30m resolution) for 0, 10, 20, 30, 50, and 75
+percent for 20 years of forest cover gain/loss in hecatares.</h3>
+<pre class="r"><code># Subset data based on the western states with a canopy density threshold of 50
+df_subset &lt;- df[df$subnational1 %in% western_states, ] %&gt;% 
+                  filter(threshold == 50)
+
+head(df_subset)</code></pre>
+<pre><code>## # A tibble: 6 × 30
+##   country       subnational1 subnational2 threshold area_ha extent_2000_ha
+##   &lt;chr&gt;         &lt;chr&gt;        &lt;chr&gt;            &lt;dbl&gt;   &lt;dbl&gt;          &lt;dbl&gt;
+## 1 United States Arizona      Apache              50 2899204         325646
+## 2 United States Arizona      Cochise             50 1605975          30265
+## 3 United States Arizona      Coconino            50 4831891         402488
+## 4 United States Arizona      Gila                50 1237368          97734
+## 5 United States Arizona      Graham              50 1208898          58785
+## 6 United States Arizona      Greenlee            50  476907         101753
+## # ℹ 24 more variables: extent_2010_ha &lt;dbl&gt;, gain_2000_2020_ha &lt;dbl&gt;,
+## #   tc_loss_ha_2001 &lt;dbl&gt;, tc_loss_ha_2002 &lt;dbl&gt;, tc_loss_ha_2003 &lt;dbl&gt;,
+## #   tc_loss_ha_2004 &lt;dbl&gt;, tc_loss_ha_2005 &lt;dbl&gt;, tc_loss_ha_2006 &lt;dbl&gt;,
+## #   tc_loss_ha_2007 &lt;dbl&gt;, tc_loss_ha_2008 &lt;dbl&gt;, tc_loss_ha_2009 &lt;dbl&gt;,
+## #   tc_loss_ha_2010 &lt;dbl&gt;, tc_loss_ha_2011 &lt;dbl&gt;, tc_loss_ha_2012 &lt;dbl&gt;,
+## #   tc_loss_ha_2013 &lt;dbl&gt;, tc_loss_ha_2014 &lt;dbl&gt;, tc_loss_ha_2015 &lt;dbl&gt;,
+## #   tc_loss_ha_2016 &lt;dbl&gt;, tc_loss_ha_2017 &lt;dbl&gt;, tc_loss_ha_2018 &lt;dbl&gt;, …</code></pre>
+<pre class="r"><code># Merging projected SF to GFW data frame
+wus_gbl_merge &lt;- wus_counties_sf_pro %&gt;%
+  left_join(df_subset, by = c(&quot;STATE_NAME&quot; = &quot;subnational1&quot;, &quot;NAME&quot; = &quot;subnational2&quot;))
+
+# Replacing NA&#39;s with zero
+wus_gbl_merge &lt;- wus_gbl_merge %&gt;%
+  mutate(gain_2000_2020_ha = replace_na(gain_2000_2020_ha, 0))
+
+
+head(wus_gbl_merge)</code></pre>
+<pre><code>## Simple feature collection with 6 features and 40 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -962581.9 ymin: 510248.9 xmax: 508708.3 ymax: 1759691
+## Projected CRS: +proj=laea +lat_0=30 +lon_0=-100
+##   STATEFP COUNTYFP COUNTYNS       AFFGEOID GEOID      NAME         NAMELSAD
+## 1      20      161 00485044 0500000US20161 20161     Riley     Riley County
+## 2      30      009 01720111 0500000US30009 30009    Carbon    Carbon County
+## 3      16      007 00395090 0500000US16007 16007 Bear Lake Bear Lake County
+## 4      31      185 00835914 0500000US31185 31185      York      York County
+## 5      08      037 00198134 0500000US08037 08037     Eagle     Eagle County
+## 6      40      079 01101827 0500000US40079 40079  Le Flore  Le Flore County
+##   STUSPS STATE_NAME LSAD      ALAND    AWATER       country threshold area_ha
+## 1     KS     Kansas   06 1579077672  32047392 United States        50  162762
+## 2     MT    Montana   06 5303728455  35213028 United States        50  533358
+## 3     ID      Idaho   06 2527123155 191364281 United States        50  271541
+## 4     NE   Nebraska   06 1482794063   8595055 United States        50  149708
+## 5     CO   Colorado   06 4362754228  18970639 United States        50  437219
+## 6     OK   Oklahoma   06 4116554962  49752941 United States        50  417282
+##   extent_2000_ha extent_2010_ha gain_2000_2020_ha tc_loss_ha_2001
+## 1          15209           8768               639              12
+## 2          53663          36426               385             235
+## 3          44456          31959               486              22
+## 4           1873           1197               440               1
+## 5         156226         131596              3154             330
+## 6         244116         214209             12843            1518
+##   tc_loss_ha_2002 tc_loss_ha_2003 tc_loss_ha_2004 tc_loss_ha_2005
+## 1               3               7              14              10
+## 2             695              92             237             326
+## 3               8               1              93              34
+## 4               0               0               2               1
+## 5              19             247             247             305
+## 6            1964             845            1126            1304
+##   tc_loss_ha_2006 tc_loss_ha_2007 tc_loss_ha_2008 tc_loss_ha_2009
+## 1              10              13              28               9
+## 2              61             887             880             310
+## 3               9              11               4               9
+## 4               2               0               0               0
+## 5             218             872             256             105
+## 6            2287            2092            2211            2016
+##   tc_loss_ha_2010 tc_loss_ha_2011 tc_loss_ha_2012 tc_loss_ha_2013
+## 1               7               8              16              19
+## 2              20             644             203              41
+## 3              40             164             138              58
+## 4               1               0               1               1
+## 5             745             259             202              81
+## 6            1897            1832            1693             965
+##   tc_loss_ha_2014 tc_loss_ha_2015 tc_loss_ha_2016 tc_loss_ha_2017
+## 1              36               3              22              17
+## 2             188             135               5               1
+## 3              50               2              13              68
+## 4               0               1               2               1
+## 5              97              84              47             247
+## 6            1208            1010            1793            1468
+##   tc_loss_ha_2018 tc_loss_ha_2019 tc_loss_ha_2020 tc_loss_ha_2021
+## 1               6               7              45              12
+## 2              89              70               0            2758
+## 3               1             137               2               1
+## 4               1               1               1               1
+## 5            1527             854              81            1102
+## 6             903            1320             881             961
+##   tc_loss_ha_2022                       geometry
+## 1              13 MULTIPOLYGON (((263040.7 10...
+## 2             255 MULTIPOLYGON (((-775324.9 1...
+## 3               3 MULTIPOLYGON (((-957856.1 1...
+## 4               1 MULTIPOLYGON (((183621.9 12...
+## 5             311 MULTIPOLYGON (((-612748.3 1...
+## 6             988 MULTIPOLYGON (((452481.3 53...</code></pre>
+<pre class="r"><code>summary(wus_gbl_merge$gain_2000_2020_ha)</code></pre>
+<pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+##     0.00    66.25   655.50  2251.94  2428.25 72164.00</code></pre>
+<p>###Plotting Tree Cover Gain at 50% Canopy Cover Threshold over 20
+years</p>
+<pre class="r"><code># Classifying data for visualization using natural jenks method
+ctpnts &lt;- classIntervals(wus_gbl_merge$gain_2000_2020_ha, n = 6, style = &quot;jenks&quot;)
+
+cols &lt;- brewer.pal(6, &quot;YlGn&quot;)
+
+colors &lt;- colorRampPalette(cols)(length(ctpnts$brks)-1)
+
+# Plotting 
+ggplot(wus_gbl_merge) +
+  geom_sf(aes(fill = gain_2000_2020_ha)) +  
+  scale_fill_gradientn(colors = colors,
+                      breaks = ctpnts$brks[-length(ctpnts$brks)],
+                       labels = rev(paste(round(ctpnts$brks[-length(ctpnts$brks)], 1), &quot;to&quot;,
+                                      round(ctpnts$brks[-1], 1))),
+                       limits = range(wus_gbl_merge$gain_2000_2020_ha)) +
+  labs(title = &quot;20 Year Primary Forest Tree Cover Gain (50% threshold)&quot;, fill = &quot;Gain (hectares)&quot;) +
+  theme(plot.title = element_text(hjust = 0.5, face = &quot;bold&quot;),
+        legend.position = &quot;right&quot;,
+        legend.background = element_rect(fill = &quot;white&quot;, colour = &quot;black&quot;),
+        legend.key = element_blank(), 
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14)) +
+  guides(fill = guide_legend(override.aes = list(fill = rev(colors)))) +
+   geom_sf(data = wus_states_sf_pro, fill = NA, color = &quot;black&quot;, size = 1.5) </code></pre>
+<p><img src="TreeCoverGain_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+### Assess spatial distribution of Canopy Cover Gain Descriptive
+statistics</p>
+<pre class="r"><code># Summary statistics
+summary(wus_gbl_merge$gain_2000_2020_ha)</code></pre>
+<pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+##     0.00    66.25   655.50  2251.94  2428.25 72164.00</code></pre>
+<pre class="r"><code># Histogram 
+ggplot(wus_gbl_merge, aes(x = gain_2000_2020_ha)) +
+  geom_histogram(binwidth = 200, fill = &quot;skyblue&quot;, color = &quot;black&quot;) +
+  labs(title = &quot;Histogram&quot;, x = &quot;Tree Cover Gain (ha)&quot;, y = &quot;Frequency&quot;)</code></pre>
+<p><img src="TreeCoverGain_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code># Boxplot highlighting PNW outliers by state
+PNW &lt;- c(&quot;Washington&quot;, &quot;Oregon&quot;, &quot;California&quot;, &quot;Idaho&quot;, &quot;Montana&quot;)
+
+PNW_SF &lt;- wus_gbl_merge[wus_gbl_merge$STATE_NAME %in% PNW, ]
+
+head(PNW_SF)</code></pre>
+<pre><code>## Simple feature collection with 6 features and 40 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -1833052 ymin: 504019.9 xmax: -640734.2 ymax: 2117980
+## Projected CRS: +proj=laea +lat_0=30 +lon_0=-100
+##    STATEFP COUNTYFP COUNTYNS       AFFGEOID GEOID      NAME         NAMELSAD
+## 2       30      009 01720111 0500000US30009 30009    Carbon    Carbon County
+## 3       16      007 00395090 0500000US16007 16007 Bear Lake Bear Lake County
+## 11      41      035 01155134 0500000US41035 41035   Klamath   Klamath County
+## 18      53      043 01514052 0500000US53043 53043   Lincoln   Lincoln County
+## 19      06      059 00277294 0500000US06059 06059    Orange    Orange County
+## 20      06      111 00277320 0500000US06111 06111   Ventura   Ventura County
+##    STUSPS STATE_NAME LSAD       ALAND    AWATER       country threshold area_ha
+## 2      MT    Montana   06  5303728455  35213028 United States        50  533358
+## 3      ID      Idaho   06  2527123155 191364281 United States        50  271541
+## 11     OR     Oregon   06 15410373389 484953082 United States        50 1590318
+## 18     WA Washington   06  5984421204  75265950 United States        50  605748
+## 19     CA California   06  2053476505 406279630 United States        50  206072
+## 20     CA California   06  4767622161 947345735 United States        50  480834
+##    extent_2000_ha extent_2010_ha gain_2000_2020_ha tc_loss_ha_2001
+## 2           53663          36426               385             235
+## 3           44456          31959               486              22
+## 11         487365         427271             72164            4601
+## 18           8713          12163               961              68
+## 19          10626          14559              3478              75
+## 20          67109          76605              2626             144
+##    tc_loss_ha_2002 tc_loss_ha_2003 tc_loss_ha_2004 tc_loss_ha_2005
+## 2              695              92             237             326
+## 3                8               1              93              34
+## 11            4274            6348            5393            3755
+## 18              98               5             378              38
+## 19             108              66              84              69
+## 20            1941            1957            1267             849
+##    tc_loss_ha_2006 tc_loss_ha_2007 tc_loss_ha_2008 tc_loss_ha_2009
+## 2               61             887             880             310
+## 3                9              11               4               9
+## 11            2991            3675            3548            4954
+## 18             180              92              30              75
+## 19             481             784             305             101
+## 20           10156            3174            1348             105
+##    tc_loss_ha_2010 tc_loss_ha_2011 tc_loss_ha_2012 tc_loss_ha_2013
+## 2               20             644             203              41
+## 3               40             164             138              58
+## 11            1767            2594            2315            2456
+## 18              19               8              25              21
+## 19              25              11              60               0
+## 20             118              61             100             487
+##    tc_loss_ha_2014 tc_loss_ha_2015 tc_loss_ha_2016 tc_loss_ha_2017
+## 2              188             135               5               1
+## 3               50               2              13              68
+## 11            3880            4547            5318            8485
+## 18              33              46              93             108
+## 19               4               1              19              24
+## 20              81              47             207           14992
+##    tc_loss_ha_2018 tc_loss_ha_2019 tc_loss_ha_2020 tc_loss_ha_2021
+## 2               89              70               0            2758
+## 3                1             137               2               1
+## 11            7872            5236            4434           27950
+## 18              74              72              37              36
+## 19             854             357              17              14
+## 20            2947             263              36              19
+##    tc_loss_ha_2022                       geometry
+## 2              255 MULTIPOLYGON (((-775324.9 1...
+## 3                3 MULTIPOLYGON (((-957856.1 1...
+## 11            4287 MULTIPOLYGON (((-1829815 15...
+## 18              54 MULTIPOLYGON (((-1436119 20...
+## 19              71 MULTIPOLYGON (((-1666632 55...
+## 20              29 MULTIPOLYGON (((-1781105 60...</code></pre>
+<pre class="r"><code>quantile(wus_gbl_merge$gain_2000_2020_ha)</code></pre>
+<pre><code>##       0%      25%      50%      75%     100% 
+##     0.00    66.25   655.50  2428.25 72164.00</code></pre>
+<pre class="r"><code>ggplot(PNW_SF, aes(x = STATE_NAME, y = gain_2000_2020_ha)) +  
+  geom_boxplot(width = 0.5, outlier.shape = 8, outlier.color = &quot;red&quot;, outlier.size = 3) + 
+  labs(title = &quot;Boxplot of Tree Cover Gain by State&quot;, y = &quot;Tree Cover Gain (ha)&quot;, x = &quot;&quot;) +
+  facet_wrap( ~ STATE_NAME, scales = &quot;free_x&quot;, ncol = 2) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = &quot;bold&quot;),
+        legend.position = &quot;none&quot;,
+        axis.text.x = element_blank(), 
+        axis.ticks.x = element_blank()) +
+  coord_cartesian(ylim = c(-0, 25000)) </code></pre>
+<p><img src="TreeCoverGain_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
+<pre class="r"><code># Creating standard distribution table to visualize amount of object values within sd break points
+mean_gain &lt;- mean(wus_gbl_merge$gain_2000_2020_ha, na.rm = TRUE)
+
+sd_gain &lt;- sd(wus_gbl_merge$gain_2000_2020_ha, na.rm = TRUE)
+
+labels &lt;- c(&quot;&lt;-2 SD&quot;, &quot;-2 SD to -1 SD&quot;, &quot;-1 SD to mean&quot;, &quot;mean to 1 SD&quot;, &quot; 1 SD to 2 SD&quot;, &quot;&gt;2 SD&quot;)
+
+breakpoints &lt;- c(-Inf, mean_gain - 2*sd_gain, mean_gain - sd_gain, mean_gain, mean_gain + sd_gain, mean_gain + 2*sd_gain, Inf)
+
+wus_gbl_merge$categories &lt;- cut(wus_gbl_merge$gain_2000_2020_ha, breaks = breakpoints, labels = labels)
+
+table(wus_gbl_merge$categories)</code></pre>
+<pre><code>## 
+##         &lt;-2 SD -2 SD to -1 SD  -1 SD to mean   mean to 1 SD   1 SD to 2 SD 
+##              0              0            785            179             51 
+##          &gt;2 SD 
+##             47</code></pre>
+</div>
+<div id="plotting-distribution-of-canopy-cover-change-map"
+class="section level3">
+<h3>Plotting distribution of canopy cover change map</h3>
+<pre class="r"><code>#
+breakpoints &lt;- c(-Inf, mean_gain, mean_gain + sd_gain, mean_gain + 2*sd_gain, Inf)
+labels &lt;- c(&quot;Below Average (&lt;-2 SD to mean)&quot;, &quot;Average (mean to 1 SD)&quot;, &quot;Above Average(1 SD to 2 SD)&quot;, &quot;Exceptionally High(&gt;2 SD)&quot;)
+
+
+colors &lt;- brewer.pal(4, &quot;YlGn&quot;)
+
+# Create a factor with labels based on cut points
+wus_gbl_merge$gain_category &lt;- cut(wus_gbl_merge$gain_2000_2020_ha, 
+                                   breaks = breakpoints, 
+                                   labels = labels)
+
+# Plot
+ggplot(wus_gbl_merge) +
+  geom_sf(aes(fill = gain_category)) +  
+  scale_fill_manual(values = colors) +
+  labs(title = &quot;Tree Cover Gain Distribution (50% threshold)&quot;,
+       fill = &quot;Tree Cover Gain (SD)&quot;) +
+  theme(plot.title = element_text(hjust = 0.5, face = &quot;bold&quot;),
+        legend.position = &quot;right&quot;,
+        legend.background = element_rect(fill = &quot;white&quot;, colour = &quot;black&quot;),
+        legend.text = element_text(size = 6),
+        legend.title = element_text(size = 10, face = &quot;bold&quot;)) +
+   geom_sf(data = wus_states_sf_pro, fill = NA, color = &quot;black&quot;, size = 1.5) </code></pre>
+<p><img src="TreeCoverGain_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

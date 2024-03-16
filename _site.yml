@@ -1,0 +1,24 @@
+---
+title: "website"
+author: "Jesse Brodrick"
+date: "2024-03-16"
+output: html_document
+---
+
+ame: "little-book-of-RStudio-websites"
+output:
+  html_document:
+    theme: flatly # specifies the theme
+navbar:
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Introduction"
+      href: Intro.html
+    - text: "webpage"
+      href: TreeCoverGain.html
+    - text: "webpage"
+      href: LMI.html
+ 
+
+output_dir: "https://github.com/jessebrodrick003/geog490" 
