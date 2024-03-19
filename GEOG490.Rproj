@@ -13,4 +13,4 @@ RnwWeave: Sweave
 LaTeX: pdfLaTeX
 
 BuildType: Website
-WebsitePath: /Users/jessebrodrick/Desktop/490Pro/GEOG490/docs
+WebsitePath: /Users/jessebrodrick/Desktop/490Pro/GEOG490

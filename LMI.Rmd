@@ -3,6 +3,15 @@ title: "Local Moran's I Clustering Analysis"
 author: "Jesse Brodrick"
 date: "2024-03-14"
 output: html_document
+html_document:
+    css: html-md-01.css
+    fig_caption: yes
+    highlight: haddock
+    number_sections: yes
+    theme: spacelab
+    toc: yes
+    toc_float: false
+    collapsed: no
 ---
 
 ## 20 year Tree Cover Gain Anlaysis with Spatial Distribution and Clustering
