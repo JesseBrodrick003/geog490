@@ -1,0 +1,16 @@
+---
+title: "Home"
+output: html_document
+---
+
+## Project web page for GEOG 4/595 *R for Earth-System Science* 
+
+This website covers various aspects of our research on Earth-System Science using R. Below are the main sections of our project:
+
+- [Introduction to the Project](intro.html)
+- [Analyzing Tree Cover Gain](TreeCoverGain.html)
+- [Exploring Spatial Patterns with Local Moran's I](LMI.html)
+- [Materials and Methods](methods.html)
+- [About the Research Team](about.html)
+
+We invite you to explore each section to learn more about our work and findings.
