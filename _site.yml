@@ -5,20 +5,32 @@ date: "2024-03-16"
 output: html_document
 ---
 
-ame: "little-book-of-RStudio-websites"
+name: GEOG 4/590
+navbar:
+  title: "Project Web Page:  R for Earth-System Science"
+  left:
+  - text: Topics
+    menu:
+    - text: "Introduction"
+      href: intro.html
+    - text: "Tree Cover Gain"
+      href: TreeCoverGain.html
+    - text: "Local Moran's I"
+      href: LMI.html
+  right:
+  - text: "About"
+    href: about.html
 output:
   html_document:
-    theme: flatly # specifies the theme
-navbar:
-  left:
-    - text: "Home"
-      href: index.html
-    - text: "Introduction"
-      href: Intro.html
-    - text: "webpage"
-      href: TreeCoverGain.html
-    - text: "webpage"
-      href: LMI.html
- 
-
-output_dir: "https://github.com/jessebrodrick003/geog490" 
+    theme: cosmo
+    version: 4
+    highlight: haddock
+    css: html-md-01.css
+    fig_caption: no
+    number_sections: yes
+    toc: yes
+    toc_float: no
+    collapsed: no
+    lib_dir: site_libs
+    self_contained: no
+output_dir: docs
