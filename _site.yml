@@ -6,17 +6,24 @@ navbar:
       href: index.html
     - text: "Topics"
       menu:
-        - text: "Introduction"
-          href: intro.html
         - text: "Tree Cover Gain"
           href: TreeCoverGain.html
         - text: "Local Moran's I"
           href: LMI.html
+    - text: "Introduction"
+      href: Intro.html
     - text: "Materials and Methods"
       href: MM.html  
+    - text: "Results"
+      href: results.html
+    - text: "Concusion"
+      href: conc.html 
   right:
+    - text: "Acknowledgements"
+      href: know.html
     - text: "About"
       href: about.html
+    
 output:
   html_document:
     theme: cosmo

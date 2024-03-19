@@ -7,7 +7,7 @@ output: html_document
 
 This website covers various aspects of our research on Earth-System Science using R. Below are the main sections of our project:
 
-- [Introduction to the Project](intro.html)
+- [Introduction to the Project](Intro.html)
 - [Analyzing Tree Cover Gain](TreeCoverGain.html)
 - [Exploring Spatial Patterns with Local Moran's I](LMI.html)
 - [Materials and Methods](methods.html)
