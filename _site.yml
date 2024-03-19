@@ -1,8 +1,6 @@
 name: "GEOG 4/590"
 navbar:
   title: "Project Web Page: R for Earth-System Science"
-  logo:
-    image: 'path/to/logo.png' # Optional: Adjust the path to your logo image if needed
   left:
     - text: "Home"
       href: index.html
@@ -15,7 +13,7 @@ navbar:
         - text: "Local Moran's I"
           href: LMI.html
     - text: "Materials and Methods"
-      href: MM.html 
+      href: MM.html  
   right:
     - text: "About"
       href: about.html
