@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Jesse Brodrick" />
+
+<meta name="date" content="2024-03-12" />
+
+<title>Project Overview</title>
+
+<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+<link rel="stylesheet" href="html-md-01.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Project Web Page: R for Earth-System Science</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Topics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Intro.html">Project Overview: Introduction, Methods, Materials and Conclusion</a>
+    </li>
+    <li>
+      <a href="TreeCoverGain.html">Forest Cover Gain Maps</a>
+    </li>
+    <li>
+      <a href="TreeCoverLoss.html">Forest Cover Loss Maps</a>
+    </li>
+    <li>
+      <a href="LMI.html">Local Moran's I</a>
+    </li>
+    <li>
+      <a href="CarbonF.html">Carbon Emission and Tree Cover Regressions</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="know.html">Acknowledgements</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Project Overview</h1>
+<h4 class="author">Jesse Brodrick</h4>
+<h4 class="date">2024-03-12</h4>
+
+</div>
+
+
+<div
+id="forest-monitoring-a-comprehensive-analysis-of-forest-cover-and-carbon-emissions-over-20-years-within-the-pacific-northwest"
+class="section level1">
+<h1>Forest Monitoring: A Comprehensive Analysis of Forest Cover and
+Carbon Emissions over 20 years within the Pacific Northwest</h1>
+<div id="gsw-tools-history-and-project-overview" class="section level2">
+<h2>GSW tools, History, and Project Overview</h2>
+<div
+id="in-recent-decades-the-urgency-to-understand-and-monitor-our-planets-forests-has-spurred-significant-advancements-in-remote-sensing-and-data-analysis-techniques.-global-forest-watch-gfw-an-initiative-since-2014-has-been-at-the-forefront-of-providing-accessible-data-on-forests-worldwide.-groundbreaking-datasets-like-the-tree-canopy-cover-introduced-by-the-university-of-marylands-umd-glad-lab-in-2013-have-allowed-researchers-to-analyze-forest-coverage-at-global-scale-using-a-medium-resolution-of-30-meters.-this-data-set-marked-a-pivotal-contribution-of-establishing-a-baseline-for-the-annual.-within-this-data-set-tree-canopy-cover-is-defined-as-the-density-of-foliage-above-five-meters-in-height-within-a-given-pixel-measured-from-the-dependable-landsat-series-of-satellites."
+class="section level3">
+<h3>In recent decades, the urgency to understand and monitor our
+planet’s forests has spurred significant advancements in remote sensing
+and data analysis techniques. Global Forest Watch (GFW), an initiative
+since 2014, has been at the forefront of providing accessible data on
+forests worldwide. Groundbreaking datasets like the Tree Canopy Cover,
+introduced by the University of Maryland’s (UMD) GLAD Lab in 2013, have
+allowed researchers to analyze forest coverage at global scale using a
+medium resolution of 30-meters. This data set marked a pivotal
+contribution of establishing a baseline for the annual. Within this data
+set, tree canopy cover is defined as the density of foliage above five
+meters in height within a given pixel, measured from the dependable
+Landsat series of satellites.</h3>
+</div>
+<div
+id="following-this-trajectory-the-umd-glad-lab-introduced-the-tree-cover-height-dataset-in-2021-revealing-not-just-the-density-of-tree-cover-but-also-the-vertical-dimension-as-well-with-the-partnership-of-global-ecosystem-dynamics-investigation-gedi-lidar-measurements.-this-data-set-is-distinguished-by-its-precision-estimating-tree-height-changes-which-aids-the-accurate-assessment-of-forest-biomass-and-carbon-storage-because-of-their-linear-relation."
+class="section level3">
+<h3>Following this trajectory, the UMD GLAD Lab introduced the Tree
+Cover Height dataset in 2021, revealing not just the density of tree
+cover but also the vertical dimension as well with the partnership of
+Global Ecosystem Dynamics Investigation (GEDI) LiDAR measurements. This
+data set is distinguished by its precision estimating tree height
+changes which aids the accurate assessment of forest biomass and carbon
+storage because of their linear relation.</h3>
+</div>
+<div
+id="it-is-also-important-to-note-that-the-data-set-that-this-project-uses-defines-trees-as-woody-vegetation-of-at-least-three-meters-in-height-and-is-estimated-by-the-height-of-the-tree-canopy-in-meters-within-a-30-meter-pixel-from-global-gedi-lidar-measurements-and-landsat-imagery.-this-data-set-estimates-the-95th-percentile-of-tree-canopy-height-and-accordingly-will-represent-the-upper-bounds-of-height-for-pixels-with-fractional-tree-cover-or-pixels-with-variable-canopy-height.-afterwards-the-data-is-aggregated-and-vectorized-into-sub-national-polygons.-thus-this-data-may-take-the-form-of-natural-forests-or-plantations-across-a-range-of-canopy-densities.-loss-indicates-the-removal-or-mortality-of-tree-cover-and-can-be-due-to-a-variety-of-factors-including-mechanical-harvesting-fire-disease-or-storm-damage."
+class="section level3">
+<h3>It is also important to note that the data set that this project
+uses, defines trees as woody vegetation of at least three meters in
+height and is estimated by the height of the tree canopy in meters
+within a 30-meter pixel from Global GEDI LiDAR measurements and Landsat
+imagery. This data set estimates the 95th percentile of tree canopy
+height, and accordingly will represent the upper bounds of height for
+pixels with fractional tree cover, or pixels with variable canopy
+height. Afterwards, the data is aggregated and vectorized into
+sub-national polygons. Thus, this data may take the form of natural
+forests or plantations across a range of canopy densities. “Loss”
+indicates the removal or mortality of tree cover and can be due to a
+variety of factors, including mechanical harvesting, fire, disease, or
+storm damage.</h3>
+</div>
+</div>
+<div id="project-objectives" class="section level2">
+<h2>Project Objectives:</h2>
+<div
+id="this-project-builds-on-the-foundation-laid-by-the-gfw-datasets-with-the-aim-to-deliver-a-detailed-analysis-of-county-level-primary-forest-cover-dynamics-particularly-focusing-on-gain-and-loss-patterns-across-the-united-states.-utilizing-the-20-year-net-change-data-from-gfw-this-study-employs-a-suite-of-data-science-techniques-in-rstudio-to-map-quantify-and-compare-forest-changes."
+class="section level4">
+<h4>This project builds on the foundation laid by the GFW datasets, with
+the aim to deliver a detailed analysis of county level primary forest
+cover dynamics, particularly focusing on gain and loss patterns across
+the United States. Utilizing the 20-year net change data from GFW, this
+study employs a suite of data science techniques in RStudio to map,
+quantify, and compare forest changes.</h4>
+</div>
+</div>
+<div id="methods" class="section level2">
+<h2>Methods:</h2>
+<div
+id="the-materials-consist-of-a-gfw-dataset-on-a-subnational2-county-level-for-tree-cover-change-and-c02-emissions-.-several-packages-including--tidyverse--sf--ggplot2--rcolorbrewer-tigris--ggplot2--classint--spdep."
+class="section level4">
+<h4>The materials consist of a GFW dataset on a subnational2 county
+level for tree cover change and C02 emissions . Several packages
+including (-tidyverse, -sf, -ggplot2,- RColorBrewer,-tigris, -ggplot2,
+-classInt, -spdep…).</h4>
+</div>
+<div
+id="global-forest-watch-provides-thresholds-or-amount-of-tree-canopy-coverage-for-0-10-20-30-50-and-75-percent-for-20-years-of-forest-cover-gainloss-in-hecatares.-in-order-to-stay-consistent-as-well-complete-a-valid-spatial-join-i-used-50-threshold-of-very-dense-forest-vdf-and-moderately-dense-forests-mdf-in-which-i-joined-by-state-and-county-to-census-boundaries-from-the-tigris-package."
+class="section level4">
+<h4>Global Forest watch provides thresholds or amount of tree canopy
+coverage for 0, 10, 20, 30, 50, and 75 percent for 20 years of forest
+cover gain/loss in hecatares. In order to stay consistent, as well
+complete a valid spatial join I used 50% threshold of very dense forest
+(VDF) and, moderately dense forests (MDF) in which I joined by state and
+county to Census Boundaries from the TIGRIS package.</h4>
+</div>
+<div
+id="assessment-of-spatiotemporal-distribution-and-variability-of-forest-cover"
+class="section level3">
+<h3>Assessment of Spatiotemporal Distribution and Variability of Forest
+Cover:</h3>
+<div
+id="within-this-project-the-tree-cover-gain-and-loss-pages-provide-you-with-maps-using-ggpot-package-to-illustrate-the-fluctuations-in-forest-cover-offering-a-visual-narrative-and-an-overall-trend-analysis-to-visualize-arboreal-gains-and-losses-at-the-county-level-since-the-year-2000.-the-maps-serve-as-a-starting-point-and-basis-for-additional-analyses-into-the-causes-and-consequences-of-forest-cover-changes.-i-have-also-generated-standard-deviation-maps-that-highlight-the-variability-and-intensity-of-changes-denoting-the-amount-of-gain-compared-county-to-county-within-the-20-year-time-span.-this-can-be-used-as-a-tool-to-provide-insights-into-the-regions-most-affected-by-deforestation-or-reforestation-practices."
+class="section level4">
+<h4>Within this project, the tree cover gain and loss pages provide you
+with maps using GGpot package to illustrate the fluctuations in forest
+cover, offering a visual narrative and an overall trend analysis to
+visualize arboreal gains and losses at the county level since the year
+2000. The maps serve as a starting point and basis for additional
+analyses into the causes and consequences of forest cover changes. I
+have also generated standard deviation maps that highlight the
+variability and intensity of changes denoting the amount of gain
+compared county to county within the 20 year time-span. This can be used
+as a tool to provide insights into the regions most affected by
+deforestation or reforestation practices.</h4>
+</div>
+</div>
+<div id="spatial-autocorrelation-with-morans-i" class="section level3">
+<h3>Spatial Autocorrelation with Moran’s I:</h3>
+<div
+id="this-project-also-provides-local-and-global-morans-i-analyses-to-classify-clustering-dispersion-or-randomness.-this-approach-is-also-supplemented-by-a-monte-carlo-simulation-to-assess-how-typical-or-atypical-the-data-may-be-relative-to-a-randomly-distributed-pattern-of-gain-and-loss-across-the-counties.-along-with-that-i-provided-hot-zone-high-high-and-cold-zone-low-low-maps-which-depict-neighboring-counties-that-are-statistically-significant-or-in-the-.05-p-value-range.-in-summary-morans-i-provides-a-quantitative-measure-of-how-forest-gain-and-loss-are-distributed-across-a-landscape-offering-insights-that-can-inform-management-decisions-policy-development-and-conservation-strategies.-it-is-a-valuable-tool-in-the-spatial-analysis-of-forest-dynamics-helping-to-ensure-that-forest-resources-are-managed-sustainably-and-that-biodiversity-is-preserved."
+class="section level4">
+<h4>This project also provides Local and Global Moran’s I analyses to
+classify clustering, dispersion, or randomness. This approach is also
+supplemented by a Monte Carlo simulation to assess how “typical” or
+“atypical” the data may be relative to a randomly distributed pattern of
+gain and loss across the counties. Along with that, I provided hot zone
+(High-High) and cold zone (Low-Low) maps which depict neighboring
+counties that are statistically significant or in the &lt;.05 p-value
+range. In summary, Moran’s I provides a quantitative measure of how
+forest gain and loss are distributed across a landscape, offering
+insights that can inform management decisions, policy development, and
+conservation strategies. It is a valuable tool in the spatial analysis
+of forest dynamics, helping to ensure that forest resources are managed
+sustainably and that biodiversity is preserved.</h4>
+</div>
+</div>
+<div id="carbon-dynamics" class="section level3">
+<h3>Carbon Dynamics</h3>
+<div
+id="the-project-also-contains-a-regression-analysis-to-discern-the-correlation-co2-emissions-and-forest-cover-loss-within-the-pnw-compared-to-the-united-sates-.-furthermore-a-time-series-regression-for-looking-at-basic-projections-on-the-trajectory-of-forest-growthdecline-rate-in-the-pnw.-this-analysis-is-important-for-understanding-the-interaction-between-human-activities-and-natural-processes-providing-a-basis-for-informed-decision-making-and-strategic-planning-in-environmental-conservation-and-climate-change-mitigation-efforts."
+class="section level4">
+<h4>The project also contains a regression analysis to discern the
+correlation CO2 emissions and forest cover loss within the PNW compared
+to the United Sates . Furthermore, a time-series regression for looking
+at basic projections on the trajectory of forest growth/decline rate in
+the PNW. This analysis is important for understanding the interaction
+between human activities and natural processes, providing a basis for
+informed decision-making and strategic planning in environmental
+conservation and climate change mitigation efforts.</h4>
+</div>
+<div
+id="through-data-manipulation-and-statistical-modeling-this-project-strives-to-offer-a-multifaceted-view-of-forest-dynamics-underpinning-conservation-efforts-and-policy-making-with-quantitative-evidence-and-predictive-insights.-with-the-current-state-of-the-world-where-our-forest-are-being-overused-by-human-activity-and-burned-by-climate-change-induced-fires-the-need-for-such-data-driven-studies-becomes-ever-more-critical."
+class="section level4">
+<h4>Through data manipulation and statistical modeling, this project
+strives to offer a multifaceted view of forest dynamics, underpinning
+conservation efforts and policy-making with quantitative evidence and
+predictive insights. With the current state of the world where our
+forest are being overused by human activity and burned by climate change
+induced fires, the need for such data-driven studies becomes ever more
+critical.</h4>
+</div>
+</div>
+<div id="discussion-on-standard-deviation-forest-cover-gain-maps"
+class="section level3">
+<h3>Discussion on Standard Deviation Forest Cover Gain Maps:</h3>
+<div
+id="the-categorization-of-tree-cover-gain-based-on-the-mean-and-standard-deviation-with-the-constraints-of-using-4-colors-translates-the-statistical-data-into-a-more-intuitive-understanding-of-how-tree-cover-gain-varies-across-different-areas.-they-include"
+class="section level4">
+<h4>The categorization of tree cover gain based on the mean and standard
+deviation, with the constraints of using 4 colors, translates the
+statistical data into a more intuitive understanding of how tree cover
+gain varies across different areas. They include:</h4>
+</div>
+<div
+id="below-average-areas-falling-into-this-category-have-gained-significantly-less-tree-cover-than-the-average-area.-this-might-indicate-regions-where-reforestation-efforts-are-less-successful-areas-that-have-experienced-recent-deforestation-that-hasnt-been-countered-by-new-growth-or-simply-areas-where-natural-tree-cover-gain-is-slower."
+class="section level4">
+<h4>Below Average: Areas falling into this category have gained
+significantly less tree cover than the average area. This might indicate
+regions where reforestation efforts are less successful, areas that have
+experienced recent deforestation that hasn’t been countered by new
+growth, or simply areas where natural tree cover gain is slower.</h4>
+</div>
+<div
+id="average-these-areas-have-tree-cover-gains-close-to-the-mean-of-the-dataset.-this-suggests-that-tree-cover-gain-here-is-typical-or-expected-based-on-the-overall-data.-it-represents-a-baseline-against-which-other-areas-can-be-compared."
+class="section level4">
+<h4>Average: These areas have tree cover gains close to the mean of the
+dataset. This suggests that tree cover gain here is typical or expected,
+based on the overall data. It represents a baseline against which other
+areas can be compared.</h4>
+</div>
+<div
+id="above-average-areas-in-this-category-have-gained-more-tree-cover-than-average-but-not-to-an-extreme-degree.-this-could-be-indicative-of-successful-reforestation-efforts-natural-recovery-from-previous-deforestation-or-areas-benefiting-from-favorable-environmental-conditions-promoting-tree-growth."
+class="section level4">
+<h4>Above Average: Areas in this category have gained more tree cover
+than average but not to an extreme degree. This could be indicative of
+successful reforestation efforts, natural recovery from previous
+deforestation, or areas benefiting from favorable environmental
+conditions promoting tree growth.</h4>
+</div>
+<div
+id="exceptionally-high-this-category-represents-areas-with-significantly-higher-tree-cover-gain-than-most-other-areas.-such-exceptional-gains-might-be-due-to-intensive-reforestation-projects-areas-recovering-from-large-scale-disturbances-like-fires-or-clear-cutting-or-possibly-errors-in-data-always-a-consideration-in-data-analysis."
+class="section level4">
+<h4>Exceptionally High: This category represents areas with
+significantly higher tree cover gain than most other areas. Such
+exceptional gains might be due to intensive reforestation projects,
+areas recovering from large-scale disturbances (like fires or
+clear-cutting), or possibly errors in data (always a consideration in
+data analysis).</h4>
+</div>
+</div>
+<div id="interpretation-and-actions" class="section level3">
+<h3>Interpretation and Actions:</h3>
+<div
+id="research-and-investigation-exceptional-cases-both-low-and-high-can-be-subjects-for-further-investigation-to-understand-the-factors-contributing-to-their-performance.-this-might-include-climate-conditions-soil-fertility-human-intervention-and-more."
+class="section level4">
+<h4>Research and Investigation: Exceptional cases, both low and high,
+can be subjects for further investigation to understand the factors
+contributing to their performance. This might include climate
+conditions, soil fertility, human intervention, and more.</h4>
+</div>
+<div
+id="targeted-efforts-resources-for-tree-planting-conservation-and-habitat-restoration-can-be-directed-more-effectively-when-areas-are-categorized-by-their-tree-cover-gain.-regions-with-below-average-gains-might-be-prioritized-for-new-projects-while-the-strategies-used-in-exceptionally-high-gain-areas-could-be-studied-and-replicated-elsewhere."
+class="section level4">
+<h4>Targeted Efforts: Resources for tree planting, conservation, and
+habitat restoration can be directed more effectively when areas are
+categorized by their tree cover gain. Regions with Below Average gains
+might be prioritized for new projects, while the strategies used in
+Exceptionally High gain areas could be studied and replicated
+elsewhere.</h4>
+</div>
+</div>
+</div>
+<div id="limitations" class="section level2">
+<h2>Limitations:</h2>
+<div
+id="improved-satellite-data-the-algorithm-uses-every-available-landsat-image-from-the-landsat-5-7-and-since-2013-landsat-8-satellites-to-detect-tree-cover-loss.-the-landsat-8-satellite-has-the-same-resolution-as-previous-landsat-missions-but-has-an-improved-sensor-that-can-better-resolve-features-on-the-ground.-incorporation-of-landsat-8-data-into-the-loss-algorithm-resulted-in-better-detections-of-tree-cover-loss-smaller-than-an-individual-pixel-e.g.-selective-logging-starting-in-2013."
+class="section level4">
+<h4>Improved satellite data: The algorithm uses every available Landsat
+image (from the Landsat 5, 7 and, since 2013, Landsat 8 satellites) to
+detect tree cover loss. The Landsat 8 satellite has the same resolution
+as previous Landsat missions, but has an improved sensor that can better
+resolve features on the ground. Incorporation of Landsat 8 data into the
+loss algorithm resulted in better detections of tree cover loss smaller
+than an individual pixel (e.g. selective logging) starting in 2013.</h4>
+</div>
+<div
+id="algorithm-adjustments-the-original-algorithm-used-to-map-tree-cover-loss-from-satellite-images-for-2001-2012-has-been-improved-upon-in-subsequent-updates.-these-improvements-allowed-for-annual-updates-starting-in-2013-coupled-with-small-additions-to-the-2011-and-2012-data-and-have-resulted-in-enhanced-detection-of-loss-particularly-from-2015-onwards."
+class="section level4">
+<h4>Algorithm adjustments: The original algorithm used to map tree cover
+loss from satellite images for 2001-2012 has been improved upon in
+subsequent updates. These improvements allowed for annual updates
+starting in 2013 (coupled with small additions to the 2011 and 2012
+data) and have resulted in enhanced detection of loss— particularly from
+2015 onwards.</h4>
+</div>
+<div
+id="tree-cover-gain-is-more-difficult-to-measure-than-loss-whereas-tree-cover-loss-is-distinctly-visible-at-a-specific-moment-in-time-tree-cover-gain-is-a-gradual-process-and-is-thus-more-difficult-to-discern-from-one-satellite-image-to-the-next.-annual-reporting-of-tree-cover-loss-has-not-been-matched-by-annual-reporting-of-tree-cover-gain-resulting-in-an-unbalanced-view-of-global-forest-change-dynamics."
+class="section level4">
+<h4>Tree cover gain is more difficult to measure than loss: Whereas tree
+cover loss is distinctly visible at a specific moment in time, tree
+cover gain is a gradual process and is thus more difficult to discern
+from one satellite image to the next. Annual reporting of tree cover
+loss has not been matched by annual reporting of tree cover gain,
+resulting in an unbalanced view of global forest change dynamics.</h4>
+</div>
+<div
+id="tree-cover-loss-and-gain-do-not-equal-net-forest.-due-to-variation-in-research-methodology-and-rate-in-which-gains-occur-versus-loss-tree-cover-tree-cover-loss-and-tree-cover-gain-data-sets-cannot-be-compared-accurately-against-each-other.-accordingly-net-loss-cannot-be-calculated-by-subtracting-figures-for-tree-cover-gain-from-tree-cover-loss-and-current-post-2000-tree-cover-cannot-be-determined-by-subtracting-figures-for-annual-tree-cover-loss-from-year-2000-tree-cover."
+class="section level4">
+<h4>Tree cover loss and gain do not equal net forest. Due to variation
+in research methodology and rate in which gains occur versus loss, tree
+cover, tree cover loss, and tree cover gain data sets cannot be compared
+accurately against each other. Accordingly, “net” loss cannot be
+calculated by subtracting figures for tree cover gain from tree cover
+loss, and current (post-2000) tree cover cannot be determined by
+subtracting figures for annual tree cover loss from year 2000 tree
+cover.</h4>
+</div>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion:</h2>
+<div
+id="when-first-looking-at-our-data-of-our-gain-and-loss-maps-the-patterns-observed-in-the-counties-with-both-high-tree-cover-loss-and-gain-over-the-past-20-years-may-reflect-a-dynamic-landscape-where-reforestation-and-deforestation-occur-simultaneously-or-in-close-succession.-this-could-be-due-to-a-variety-of-factors-including-forestry-practices-like-clear-cutting-followed-by-replanting-natural-disturbances-followed-by-recovery-or-changes-in-land-use-where-areas-are-alternately-being-deforested-for-development-and-other-areas-being-reforested-for-conservation.-these-findings-suggest-a-complex-interplay-between-conservation-efforts-land-management-strategies-and-economic-development-highlighting-the-need-for-a-sustainable-approach-to-forestry-that-balances-ecological-health-with-human-needs."
+class="section level4">
+<h4>When first looking at our data of our gain and loss maps the
+patterns observed in the counties with both high tree cover loss and
+gain over the past 20 years may reflect a dynamic landscape where
+reforestation and deforestation occur simultaneously or in close
+succession. This could be due to a variety of factors, including
+forestry practices like clear-cutting followed by replanting, natural
+disturbances followed by recovery, or changes in land use where areas
+are alternately being deforested for development and other areas being
+reforested for conservation. These findings suggest a complex interplay
+between conservation efforts, land management strategies, and economic
+development, highlighting the need for a sustainable approach to
+forestry that balances ecological health with human needs.</h4>
+</div>
+<div
+id="within-the-local-morans-i-of-identifying-local-clusters-and-local-spatial-outliers-using-row-standardized-weights-w-proved-that-these-patterns-are-not-random-and-indicate-that-there-might-be-underlying-factorssuch-as-environmental-conditions-land-use-policies-or-economic-activitiescontributing-to-these-clustered-patterns-of-forest-cover-change.-this-can-be-useful-for-a-future-multivariate-analysis.-for-example-if-deforestation-is-occurring-primarily-in-specific-regions-due-to-human-activities-or-natural-causes-morans-i-can-help-identify-these-hotspots."
+class="section level4">
+<h4>Within the local Morans I of identifying local clusters and local
+spatial outliers using row-standardized weights w proved that these
+patterns are not random and indicate that there might be underlying
+factors—such as environmental conditions, land use policies, or economic
+activities—contributing to these clustered patterns of forest cover
+change. This can be useful for a future multivariate analysis. For
+example, if deforestation is occurring primarily in specific regions due
+to human activities or natural causes, Moran’s I can help identify these
+hotspots.</h4>
+</div>
+<div
+id="when-expanding-past-this-analysis-there-are-a-multitude-of-underlying-varaibles-that-can-be-assesed.-for-instance-this-can-be-used-for-guiding-conservation-efforts-by-our-identified-areas-of-significant-forest-change-policymakers-and-conservationists-can-target-interventions-more-effectively.-therefore-they-can-focus-reforestation-efforts-in-regions-where-loss-is-clustered-or-protect-areas-of-significant-gain.-one-other-example-is-understanding-ecological-processes-forest-ecology-is-inherently-spatial.-processes-like-seed-dispersal-wildfire-spread-and-disease-outbreaks-all-exhibit-spatial-patterns.-morans-i-helps-understand-these-processes-by-identifying-patterns-that-may-indicate-ecological-interactions-which-is-related-to-landscape-connectivity-in-conservation-biology-landscape-connectivity-is-crucial-for-maintaining-biodiversity.-morans-i-can-indicate-the-degree-to-which-forested-areas-or-how-in-this-project-counties-are-fragmented-and-connected.-this-also-has-implications-for-predicting-carbon-dioxide-emission-gain-over-time-we-could-see-in-our-hot-zone-clustered-areas-and-how-we-should-take-note-of-what-the-cold-zone-clustered-areas-are-doing-to-follow-suit."
+class="section level4">
+<h4>When expanding past this analysis, there are a multitude of
+underlying varaibles that can be assesed. For instance, this can be used
+for guiding conservation efforts by our identified areas of significant
+forest change Policymakers and conservationists can target interventions
+more effectively. therefore, they can focus reforestation efforts in
+regions where loss is clustered or protect areas of significant gain.
+One other example is understanding ecological Processes: Forest ecology
+is inherently spatial. Processes like seed dispersal, wildfire spread,
+and disease outbreaks all exhibit spatial patterns. Moran’s I helps
+understand these processes by identifying patterns that may indicate
+ecological interactions which is related to landscape connectivity: In
+conservation biology, landscape connectivity is crucial for maintaining
+biodiversity. Moran’s I can indicate the degree to which forested areas
+or how in this project, counties are fragmented and connected. This also
+has implications for predicting carbon dioxide emission gain over time
+we could see in our hot zone clustered areas and how we should take note
+of what the cold zone clustered areas are doing to follow suit.</h4>
+</div>
+<div
+id="the-inclusion-of-regression-analysis-in-this-project-to-discern-the-correlation-between-co2-emissions-and-forest-cover-loss-both-within-the-pacific-northwest-pnw-and-across-the-united-states-is-significant-for-several-reasons-understanding-environmental-impacts-co2-emissions-are-a-major-driver-of-climate-change-and-forests-play-a-critical-role-in-carbon-sequestration.-analyzing-the-relationship-between-emissions-and-forest-cover-loss-reveals-how-changes-in-forest-areas-may-be-contributing-or-to-or-mitigating-climate-change."
+class="section level4">
+<h4>The inclusion of regression analysis in this project to discern the
+correlation between CO2 emissions and forest cover loss, both within the
+Pacific Northwest (PNW) and across the United States, is significant for
+several reasons: Understanding Environmental Impacts: CO2 emissions are
+a major driver of climate change, and forests play a critical role in
+carbon sequestration. Analyzing the relationship between emissions and
+forest cover loss reveals how changes in forest areas may be
+contributing or to or mitigating climate change.</h4>
+</div>
+<div
+id="additionally-by-comparing-the-pnw-with-the-entire-united-states-the-analysis-highlighted-regional-differences-in-the-relationship-between-emissions-and-forest-changes.-this-lead-to-a-more-nuanced-understanding-of-how-the-the-correlation-between-co2-and-tree-cover-loss-was-way-stronger-than-the-overall-us.-this-could-be-due-to-local-factorssuch-as-clear-cutting-from-a-large-timber-economy-in-the-pnw-wildfires-which-also-influence-co2-emissions."
+class="section level4">
+<h4>Additionally, by comparing the PNW with the entire United States,
+the analysis highlighted regional differences in the relationship
+between emissions and forest changes. This lead to a more nuanced
+understanding of how the the correlation between CO2 and tree cover loss
+was way stronger than the overall US. This could be due to local
+factors—such as clear cutting from a large timber economy in the PNW,
+wildfires which also influence CO2 emissions.</h4>
+</div>
+<div
+id="this-project-using-global-forest-watch-data-and-r-reveals-a-nuanced-understanding-of-forest-cover-dynamics-over-the-past-two-decades.-through-the-analysis-it-highlighted-not-just-the-areas-of-tree-cover-gain-and-loss-but-also-the-spatial-distribution-patternsshowing-significant-clustering-rather-than-randomness-in-these-changes.-this-suggests-that-environmental-policies-land-management-practices-and-other-regional-factors-are-likely-influencing-these-patterns.-the-positive-correlation-between-co2-emissions-and-tree-cover-loss-in-the-us-particularly-within-the-pacific-northwest-underscores-the-interconnectedness-of-human-activities-and-forest-changes.-overall-this-work-contributes-valuable-insights-into-forest-conservation-efforts-highlighting-areas-that-may-require-more-focused-intervention-to-manage-and-mitigate-the-impact-of-anthropogenic-activities-on-forest-ecosystems."
+class="section level4">
+<h4>This project, using Global Forest Watch data and R, reveals a
+nuanced understanding of forest cover dynamics over the past two
+decades. Through the analysis, it highlighted not just the areas of tree
+cover gain and loss, but also the spatial distribution patterns—showing
+significant clustering rather than randomness in these changes. This
+suggests that environmental policies, land management practices, and
+other regional factors are likely influencing these patterns. The
+positive correlation between CO2 emissions and tree cover loss in the
+US, particularly within the Pacific Northwest, underscores the
+interconnectedness of human activities and forest changes. Overall, this
+work contributes valuable insights into forest conservation efforts,
+highlighting areas that may require more focused intervention to manage
+and mitigate the impact of anthropogenic activities on forest
+ecosystems.</h4>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

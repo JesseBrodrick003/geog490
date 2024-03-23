@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Jesse Brodrick" />
+
+<meta name="date" content="2024-03-19" />
+
+<title>Discussion, and Conclusion</title>
+
+<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+<link rel="stylesheet" href="html-md-01.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Project Web Page: R for Earth-System Science</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Topics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Intro.html">Project Overview: Introduction, Methods, Materials and Conclusion</a>
+    </li>
+    <li>
+      <a href="TreeCoverGain.html">Forest Cover Gain Maps</a>
+    </li>
+    <li>
+      <a href="TreeCoverLoss.html">Forest Cover Loss Maps</a>
+    </li>
+    <li>
+      <a href="LMI.html">Local Moran's I</a>
+    </li>
+    <li>
+      <a href="CarbonF.html">Carbon Emission and Tree Cover Regressions</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="know.html">Acknowledgements</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Discussion, and Conclusion</h1>
+<h4 class="author">Jesse Brodrick</h4>
+<h4 class="date">2024-03-19</h4>
+
+</div>
+
+
+<div id="conclusion" class="section level2" number="0.1">
+<h2><span class="header-section-number">0.1</span> Conclusion</h2>
+</div>
+<div
+id="local-morans-i-identifying-local-clusters-and-local-spatial-outliers-using-row-standardized-weights."
+class="section level2" number="0.2">
+<h2><span class="header-section-number">0.2</span> Local Morans I:
+Identifying local clusters and local spatial outliers using
+row-standardized weights.</h2>
+<div
+id="identifying-spatial-clusters-morans-i-can-reveal-clusters-of-forest-loss-or-gain.-for-example-if-deforestation-is-occurring-primarily-in-specific-regions-due-to-human-activities-or-natural-causes-morans-i-can-help-identify-these-hotspots."
+class="section level3" number="0.2.1">
+<h3><span class="header-section-number">0.2.1</span> Identifying Spatial
+Clusters: Moran’s I can reveal clusters of forest loss or gain. For
+example, if deforestation is occurring primarily in specific regions due
+to human activities or natural causes, Moran’s I can help identify these
+hotspots.</h3>
+</div>
+<div
+id="guiding-conservation-efforts-by-identifying-areas-of-significant-forest-change-policymakers-and-conservationists-can-target-interventions-more-effectively.-for-instance-they-can-focus-reforestation-efforts-in-regions-where-loss-is-clustered-or-protect-areas-of-significant-gain."
+class="section level3" number="0.2.2">
+<h3><span class="header-section-number">0.2.2</span> Guiding
+Conservation Efforts: By identifying areas of significant forest change,
+policymakers and conservationists can target interventions more
+effectively. For instance, they can focus reforestation efforts in
+regions where loss is clustered or protect areas of significant
+gain.</h3>
+</div>
+<div
+id="understanding-ecological-processes-forest-ecology-is-inherently-spatial.-processes-like-seed-dispersal-wildfire-spread-and-disease-outbreaks-all-exhibit-spatial-patterns.-morans-i-helps-understand-these-processes-by-identifying-patterns-that-may-indicate-ecological-interactions."
+class="section level3" number="0.2.3">
+<h3><span class="header-section-number">0.2.3</span> Understanding
+Ecological Processes: Forest ecology is inherently spatial. Processes
+like seed dispersal, wildfire spread, and disease outbreaks all exhibit
+spatial patterns. Moran’s I helps understand these processes by
+identifying patterns that may indicate ecological interactions.</h3>
+</div>
+<div
+id="informing-landscape-connectivity-in-conservation-biology-landscape-connectivity-is-crucial-for-maintaining-biodiversity.-morans-i-can-indicate-the-degree-to-which-forested-areas-are-fragmented-or-connected-which-has-implications-for-wildlife-movement-and-genetic-exchange."
+class="section level3" number="0.2.4">
+<h3><span class="header-section-number">0.2.4</span> Informing Landscape
+Connectivity: In conservation biology, landscape connectivity is crucial
+for maintaining biodiversity. Moran’s I can indicate the degree to which
+forested areas are fragmented or connected, which has implications for
+wildlife movement and genetic exchange.</h3>
+</div>
+<div
+id="evaluating-human-impact-spatial-patterns-of-forest-cover-change-can-reflect-the-impact-of-human-activities-such-as-urban-expansion-agriculture-and-logging.-morans-i-can-help-assess-how-these-activities-are-altering-forest-landscapes-over-time."
+class="section level3" number="0.2.5">
+<h3><span class="header-section-number">0.2.5</span> Evaluating Human
+Impact: Spatial patterns of forest cover change can reflect the impact
+of human activities, such as urban expansion, agriculture, and logging.
+Moran’s I can help assess how these activities are altering forest
+landscapes over time.</h3>
+</div>
+<div
+id="assessing-policy-and-management-effectiveness-by-comparing-spatial-patterns-of-forest-change-before-and-after-the-implementation-of-forest-policies-or-management-practices-morans-i-can-be-used-to-evaluate-their-effectiveness."
+class="section level3" number="0.2.6">
+<h3><span class="header-section-number">0.2.6</span> Assessing Policy
+and Management Effectiveness: By comparing spatial patterns of forest
+change before and after the implementation of forest policies or
+management practices, Moran’s I can be used to evaluate their
+effectiveness.</h3>
+</div>
+<div
+id="climate-change-insights-forest-cover-gain-and-loss-are-both-important-factors-in-the-global-carbon-cycle.-understanding-the-spatial-dynamics-of-forest-changes-contributes-to-better-models-of-carbon-sequestration-and-emissions-which-are-vital-for-climate-change-predictions-and-mitigation-strategies."
+class="section level3" number="0.2.7">
+<h3><span class="header-section-number">0.2.7</span> Climate Change
+Insights: Forest cover gain and loss are both important factors in the
+global carbon cycle. Understanding the spatial dynamics of forest
+changes contributes to better models of carbon sequestration and
+emissions, which are vital for climate change predictions and mitigation
+strategies.</h3>
+</div>
+<div
+id="time-series-regression-and-the-comparison-between-co2-emissions-and-forest-cover-loss"
+class="section level3" number="0.2.8">
+<h3><span class="header-section-number">0.2.8</span> Time Series
+Regression and the comparison between CO2 emissions and Forest Cover
+Loss:</h3>
+</div>
+<div
+id="the-inclusion-of-regression-analysis-in-your-project-to-discern-the-correlation-between-co2-emissions-and-forest-cover-loss-both-within-the-pacific-northwest-pnw-and-across-the-united-states-is-significant-for-several-reasons"
+class="section level3" number="0.2.9">
+<h3><span class="header-section-number">0.2.9</span> The inclusion of
+regression analysis in your project to discern the correlation between
+CO2 emissions and forest cover loss, both within the Pacific Northwest
+(PNW) and across the United States, is significant for several
+reasons:</h3>
+</div>
+<div
+id="understanding-environmental-impacts-co2-emissions-are-a-major-driver-of-climate-change-and-forests-play-a-critical-role-in-carbon-sequestration.-analyzing-the-relationship-between-emissions-and-forest-cover-loss-can-reveal-how-changes-in-forest-areas-may-be-contributing-to-or-mitigating-climate-change."
+class="section level3" number="0.2.10">
+<h3><span class="header-section-number">0.2.10</span> Understanding
+Environmental Impacts: CO2 emissions are a major driver of climate
+change, and forests play a critical role in carbon sequestration.
+Analyzing the relationship between emissions and forest cover loss can
+reveal how changes in forest areas may be contributing to or mitigating
+climate change.</h3>
+</div>
+<div
+id="informing-policy-and-management-the-insights-from-the-regression-analysis-can-inform-policymakers-and-environmental-managers-about-the-effectiveness-of-current-forest-management-practices-and-policies.-if-a-strong-correlation-is-found-it-might-indicate-that-efforts-to-reduce-co2-emissions-could-have-a-beneficial-impact-on-forest-conservation-and-vice-versa."
+class="section level3" number="0.2.11">
+<h3><span class="header-section-number">0.2.11</span> Informing Policy
+and Management: The insights from the regression analysis can inform
+policymakers and environmental managers about the effectiveness of
+current forest management practices and policies. If a strong
+correlation is found, it might indicate that efforts to reduce CO2
+emissions could have a beneficial impact on forest conservation and vice
+versa.</h3>
+</div>
+<div
+id="comparative-analysis-by-comparing-the-pnw-with-the-entire-united-states-the-analysis-can-highlight-regional-differences-in-the-relationship-between-emissions-and-forest-changes.-this-can-lead-to-a-more-nuanced-understanding-of-how-local-factorssuch-as-policy-economy-and-ecologyaffect-forest-cover-dynamics."
+class="section level3" number="0.2.12">
+<h3><span class="header-section-number">0.2.12</span> Comparative
+Analysis: By comparing the PNW with the entire United States, the
+analysis can highlight regional differences in the relationship between
+emissions and forest changes. This can lead to a more nuanced
+understanding of how local factors—such as policy, economy, and
+ecology—affect forest cover dynamics.</h3>
+</div>
+<div
+id="economic-and-ecological-planning-regions-with-significant-forest-cover-loss-may-face-economic-consequences-such-as-loss-of-timber-resources-and-ecosystem-services.-understanding-the-correlation-with-co2-emissions-can-guide-sustainable-planning-and-the-development-of-green-economies."
+class="section level3" number="0.2.13">
+<h3><span class="header-section-number">0.2.13</span> Economic and
+Ecological Planning: Regions with significant forest cover loss may face
+economic consequences, such as loss of timber resources and ecosystem
+services. Understanding the correlation with CO2 emissions can guide
+sustainable planning and the development of green economies.</h3>
+</div>
+<div
+id="predictive-modeling-time-series-regression-allows-for-the-projection-of-future-trends-in-forest-growth-or-decline-based-on-historical-data.-this-can-be-vital-for-anticipating-future-changes-preparing-for-potential-impacts-and-planning-restoration-or-conservation-efforts."
+class="section level3" number="0.2.14">
+<h3><span class="header-section-number">0.2.14</span> Predictive
+Modeling: Time-series regression allows for the projection of future
+trends in forest growth or decline based on historical data. This can be
+vital for anticipating future changes, preparing for potential impacts,
+and planning restoration or conservation efforts.</h3>
+</div>
+<div
+id="assessing-the-carbon-budget-forests-are-a-major-component-of-the-terrestrial-carbon-budget.-understanding-how-emissions-correlate-with-forest-loss-is-key-to-modeling-carbon-flows-and-stocks-and-can-be-crucial-for-commitments-under-international-agreements-like-the-paris-accord."
+class="section level3" number="0.2.15">
+<h3><span class="header-section-number">0.2.15</span> Assessing the
+Carbon Budget: Forests are a major component of the terrestrial carbon
+budget. Understanding how emissions correlate with forest loss is key to
+modeling carbon flows and stocks and can be crucial for commitments
+under international agreements like the Paris Accord.</h3>
+</div>
+<div
+id="local-vs.-national-perspectives-the-comparison-of-regional-data-with-national-trends-can-provide-unique-insights-into-how-localized-environmental-factors-or-policies-might-influence-larger-scale-processes-and-outcomes."
+class="section level3" number="0.2.16">
+<h3><span class="header-section-number">0.2.16</span> Local vs. National
+Perspectives: The comparison of regional data with national trends can
+provide unique insights into how localized environmental factors or
+policies might influence larger-scale processes and outcomes.</h3>
+</div>
+</div>
+<div id="limitations" class="section level2" number="0.3">
+<h2><span class="header-section-number">0.3</span> Limitations:</h2>
+<div
+id="improved-satellite-data-the-algorithm-uses-every-available-landsat-image-from-the-landsat-5-7-and-since-2013-landsat-8-satellites-to-detect-tree-cover-loss.-the-landsat-8-satellite-has-the-same-resolution-as-previous-landsat-missions-but-has-an-improved-sensor-that-can-better-resolve-features-on-the-ground.-incorporation-of-landsat-8-data-into-the-loss-algorithm-resulted-in-better-detections-of-tree-cover-loss-smaller-than-an-individual-pixel-e.g.-selective-logging-starting-in-2013."
+class="section level3" number="0.3.1">
+<h3><span class="header-section-number">0.3.1</span> Improved satellite
+data: The algorithm uses every available Landsat image (from the Landsat
+5, 7 and, since 2013, Landsat 8 satellites) to detect tree cover loss.
+The Landsat 8 satellite has the same resolution as previous Landsat
+missions, but has an improved sensor that can better resolve features on
+the ground. Incorporation of Landsat 8 data into the loss algorithm
+resulted in better detections of tree cover loss smaller than an
+individual pixel (e.g. selective logging) starting in 2013.</h3>
+</div>
+<div
+id="algorithm-adjustments-the-original-algorithm-used-to-map-tree-cover-loss-from-satellite-images-for-2001-2012-has-been-improved-upon-in-subsequent-updates.-these-improvements-allowed-for-annual-updates-starting-in-2013-coupled-with-small-additions-to-the-2011-and-2012-data-and-have-resulted-in-enhanced-detection-of-loss-particularly-from-2015-onwards."
+class="section level3" number="0.3.2">
+<h3><span class="header-section-number">0.3.2</span> Algorithm
+adjustments: The original algorithm used to map tree cover loss from
+satellite images for 2001-2012 has been improved upon in subsequent
+updates. These improvements allowed for annual updates starting in 2013
+(coupled with small additions to the 2011 and 2012 data) and have
+resulted in enhanced detection of loss— particularly from 2015
+onwards.</h3>
+</div>
+<div
+id="tree-cover-gain-is-more-difficult-to-measure-than-loss-whereas-tree-cover-loss-is-distinctly-visible-at-a-specific-moment-in-time-tree-cover-gain-is-a-gradual-process-and-is-thus-more-difficult-to-discern-from-one-satellite-image-to-the-next.-annual-reporting-of-tree-cover-loss-has-not-been-matched-by-annual-reporting-of-tree-cover-gain-resulting-in-an-unbalanced-view-of-global-forest-change-dynamics."
+class="section level3" number="0.3.3">
+<h3><span class="header-section-number">0.3.3</span> Tree cover gain is
+more difficult to measure than loss: Whereas tree cover loss is
+distinctly visible at a specific moment in time, tree cover gain is a
+gradual process and is thus more difficult to discern from one satellite
+image to the next. Annual reporting of tree cover loss has not been
+matched by annual reporting of tree cover gain, resulting in an
+unbalanced view of global forest change dynamics.</h3>
+<p>###Tree cover loss and gain do not equal net forest. Due to variation
+in research methodology and date of content, tree cover, tree cover
+loss, and tree cover gain data sets cannot be compared accurately
+against each other. Accordingly, “net” loss cannot be calculated by
+subtracting figures for tree cover gain from tree cover loss, and
+current (post-2000) tree cover cannot be determined by subtracting
+figures for annual tree cover loss from year 2000 tree cover.</p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
