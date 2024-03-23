@@ -43,13 +43,7 @@ pdf.options(useDingbats = TRUE)
 
 #### Local Morans I:Identifying local clusters and local spatial outliers using row-standardized weights.
 
-## Results:
 
-## Discussion: 
-
-## Conclusion: 
-
-## Acknowledgments and References: 
 
 
 

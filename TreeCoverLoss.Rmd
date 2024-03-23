@@ -1,0 +1,218 @@
+---
+title: "Tree Cover Loss"
+author: "Jesse Brodrick"
+date: "2024-03-20"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(sf)
+library(ggplot2)
+library(RColorBrewer)
+library(tigris)
+library(ggplot2)
+library(classInt)
+library(spdep)
+library(tmap)
+getwd()
+
+ctcldf <- read_csv("/Users/jessebrodrick/Desktop/490Pro/data/GlblFW/CTCL1.csv")
+```
+
+
+```{r}
+options(tigris_class = "sf")
+options(tigris_use_cache = TRUE)
+
+# Obtain state boundaries
+states_sf <- states(cb = TRUE)
+
+# Obtain county boundaries
+counties_sf <- counties(cb = TRUE)
+
+# Filter for western states and their counties
+western_states <- c("Washington", "Oregon", "California", "Idaho", 
+                    "Montana", "Nevada")
+# Filter state and counties for western states sf
+wus_states_sf <- states_sf[states_sf$NAME %in% western_states, ]
+
+wus_counties_sf <- counties_sf[counties_sf$STATE_NAME %in% western_states, ]
+
+ 
+
+# Projection
+laea = st_crs("+proj=laea +lat_0=30 +lon_0=-100") # Lambert Azimuthal Equal Area
+
+wus_states_sf_pro = st_transform(wus_states_sf, laea)
+
+wus_counties_sf_pro = st_transform(wus_counties_sf, laea)
+```
+
+
+
+```{r}
+# Subset data based on the western states with a canopy density threshold of 50
+Wustclsubset <- ctcldf[ctcldf$subnational1 %in% western_states, ] %>% 
+                  filter(threshold == 50)
+
+# Combine state and county names into a new column for graph visualization 
+Wustclsubset1 <- Wustclsubset %>%
+  mutate(region = paste(subnational1, subnational2, sep = ", "))
+
+
+# Calculate total tree cover loss for each county
+total_loss_by_county1 <- Wustclsubset1 %>%
+  group_by(region) %>%
+  summarize(Total_Loss1 = sum(tc_loss_ha_2001:tc_loss_ha_2022, na.rm = TRUE)) %>%
+  arrange(desc(Total_Loss1))
+
+# Top 10 counties with the highest total tree cover loss
+top_counties_loss1 <- total_loss_by_county1 %>%
+  top_n(10, Total_Loss1)
+
+
+
+# Plotting
+ggplot(top_counties_loss1, aes(x = reorder(region, Total_Loss1), y = Total_Loss1)) +
+  geom_bar(stat = "identity") +
+  coord_flip() + 
+  theme_minimal() +
+  labs(title = "Top 10 Counties by Total Tree Cover Loss (2001-2022)",
+       x = "County",
+       y = "Total Tree Cover Loss (ha)")
+
+
+```
+
+## Assess spatial distribution of Canopy Cover Gain and Descriptive statistics
+### Plotting top tree loss counties
+
+```{r}
+# Summary statistics
+summary(total_loss_by_county$loss_2000_2020_ha)
+
+# Histogram 
+ggplot(total_loss_by_county, aes(x = loss_2000_2020_ha)) +
+  geom_histogram(binwidth = 200, fill = "skyblue", color = "black") +
+  labs(title = "Histogram", x = "Tree Cover Gain (ha)", y = "Frequency")
+
+# Boxplot highlighting PNW outliers by state
+PNW <- c("Washington", "Oregon", "California", "Idaho", "Montana")
+
+PNW_SF <- total_loss_by_county[total_loss_by_county$STATE_NAME %in% PNW, ]
+
+head(PNW_SF)
+
+quantile(total_loss_by_county$loss_2000_2020_ha)
+
+ggplot(PNW_SF, aes(x = STATE_NAME, y = loss_2000_2020_ha)) +  
+  geom_boxplot(width = 0.5, outlier.shape = 8, outlier.color = "red", outlier.size = 3) + 
+  labs(title = "Boxplot of Tree Cover Gain by State", y = "Tree Cover Gain (ha)", x = "") +
+  facet_wrap( ~ STATE_NAME, scales = "free_x", ncol = 2) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold"),
+        legend.position = "none",
+        axis.text.x = element_blank(), 
+        axis.ticks.x = element_blank()) +
+  coord_cartesian(ylim = c(-0, 100000))
+```
+
+###Visualizing on a plot
+```{r}
+
+# Merging projected SF to GFW data frame
+wus_loss_merge <- wus_counties_sf_pro %>%
+  left_join(Wustclsubset, by = c("STATE_NAME" = "subnational1", "NAME" = "subnational2"))
+  
+# Replacing NA's with zero
+total_loss_by_county <- wus_loss_merge %>%
+  mutate(across(starts_with("tc_loss_ha_"), as.numeric, .names = "numeric_{.col}")) %>%
+  rowwise() %>%
+  mutate(loss_2000_2020_ha = sum(c_across(starts_with("numeric_tc_loss_ha_")), na.rm = TRUE)) %>%
+  ungroup() %>%
+  select(-starts_with("numeric_tc_loss_ha_")) # Removing temporary numeric columns
+
+head(wus_loss_merge)
+
+head(total_loss_by_county)
+
+# Classifying data for visualization using natural jenks method
+ctpnts <- classIntervals(total_loss_by_county$loss_2000_2020_ha, n = 6, style = "jenks")
+
+cols <- brewer.pal(6, "YlOrRd")
+
+colors <- colorRampPalette(cols)(length(ctpnts$brks)-1)
+
+# Plotting 
+ggplot(total_loss_by_county) +
+  geom_sf(aes(fill = loss_2000_2020_ha)) +  
+  scale_fill_gradientn(colors = colors,
+                      breaks = ctpnts$brks[-length(ctpnts$brks)],
+                       labels = rev(paste(round(ctpnts$brks[-length(ctpnts$brks)], 1), "to",
+                                      round(ctpnts$brks[-1], 1))),
+                       limits = range(total_loss_by_county$loss_2000_2020_ha)) +
+  labs(title = "20 Year Primary Forest Tree Cover Loss (50% threshold)", fill = "Loss (hectares)") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+        legend.position = "right",
+        legend.background = element_rect(fill = "white", colour = "black"),
+        legend.key = element_blank(), 
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14)) +
+  guides(fill = guide_legend(override.aes = list(fill = rev(colors)))) +
+   geom_sf(data = wus_states_sf_pro, fill = NA, color = "black", size = 1.5) 
+
+
+
+```
+
+
+
+### Creating standard distribution table to visualize amount of object values within sd break points
+
+```{r}
+#descriptive stats
+mean_loss <- mean(total_loss_by_county$loss_2000_2020_ha, na.rm = TRUE)
+str(total_loss_by_county$loss_2000_2020_ha)
+sd_loss <- sd(total_loss_by_county$loss_2000_2020_ha, na.rm = TRUE)
+
+labels <- c("<-2 SD", "-2 SD to -1 SD", "-1 SD to mean", "mean to 1 SD", " 1 SD to 2 SD", ">2 SD")
+
+breakpoints <- c(-Inf, mean_loss - 2*sd_loss, mean_loss - sd_loss, mean_loss, mean_loss + sd_loss, mean_loss + 2*sd_loss, Inf)
+
+total_loss_by_county$categories <- cut(total_loss_by_county$loss_2000_2020_ha, breaks = breakpoints, labels = labels)
+
+table(total_loss_by_county$categories)
+```
+
+
+### Plotting distribution of canopy cover change map
+
+```{r}
+breakpoints <- c(-Inf, mean_loss, mean_loss + sd_loss, mean_loss + 2*sd_loss, Inf)
+labels <- c("Below Average (<-2 SD to mean)", "Average (mean to 1 SD)", "Above Average(1 SD to 2 SD)", "Exceptionally High(>2 SD)")
+
+
+colors <- brewer.pal(4, "YlOrRd")
+
+# Create a factor with labels based on cut points
+total_loss_by_county$loss_category <- cut(total_loss_by_county$loss_2000_2020_ha, 
+                                   breaks = breakpoints, 
+                                   labels = labels)
+
+# Plot
+ggplot(total_loss_by_county) +
+  geom_sf(aes(fill = loss_category)) +  
+  scale_fill_manual(values = colors) +
+  labs(title = "Tree Cover Gain Distribution (50% threshold)",
+       fill = "Tree Cover Gain (SD)") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+        legend.position = "right",
+        legend.background = element_rect(fill = "white", colour = "black"),
+        legend.text = element_text(size = 6),
+        legend.title = element_text(size = 10, face = "bold")) +
+   geom_sf(data = wus_states_sf_pro, fill = NA, color = "black", size = 1.5) 
+
+
+```
+

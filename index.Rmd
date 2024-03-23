@@ -2,15 +2,17 @@
 title: "Home"
 output: html_document
 ---
+<img src="/Users/jessebrodrick/Desktop/490Pro/GEOG490/gfw.jpg"  width="500"/>
 
 ## Project web page for GEOG 4/595 *R for Earth-System Science* 
 
-This website covers various aspects of our research on Earth-System Science using R. Below are the main sections of our project:
+This website covers various aspects of tree Cover gain/loss and carbon emissions over the past 20 years within the Pacific Northwest using R Studio and data from Global Forest Watch, an open-source web application to monitor global forests in near real-time. Below are the main sections of the project:
 
 - [Introduction to the Project](Intro.html)
 - [Analyzing Tree Cover Gain](TreeCoverGain.html)
+- [Analyzing Tree Cover Loss](TreeCoverLoss.html)
 - [Exploring Spatial Patterns with Local Moran's I](LMI.html)
-- [Materials and Methods](methods.html)
-- [About the Research Team](about.html)
+- [Methods, Results, Disscusion, and Conclusion](MM.html)
+- [About](about.html)
 
-We invite you to explore each section to learn more about our work and findings.
+Explore each section to learn more about the work and findings!

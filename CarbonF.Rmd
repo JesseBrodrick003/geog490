@@ -1,0 +1,259 @@
+---
+title: "Carbon and Tree Loss Data"
+author: "Jesse Brodrick"
+date: "2024-03-20"
+output: html_document
+---
+# Time Series Regression of CO2 emssions and Tree Cover comparing the the PNW verses the US as a whole (2000-2022)
+
+### Carbon Emission Time Series Regression in the PNW
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(stringr)
+
+ccd_data <- read_csv("/Users/jessebrodrick/Desktop/490Pro/data/GlblFW/CCD.csv")
+
+# Filter for a  threshold of 50 and western states  
+western_states <- c("Washington", "Oregon", "California", "Idaho", 
+                    "Montana", "Nevada")
+
+ccd_subset <- ccd_data %>%
+  filter(subnational1 %in% western_states, umd_tree_cover_density_2000__threshold == 50)
+
+### Identify the emission columns
+emission_columns <- names(ccd_subset)[grepl("gfw_forest_carbon_gross_emissions_", names(ccd_subset))]
+
+### Pivot the data to long format,
+ccd_long <- ccd_subset %>%
+  pivot_longer(
+    cols = all_of(emission_columns),
+    names_to = "Year_Emission",
+    values_to = "Emissions"
+  )
+
+### Extract the year from 'Year_Emission' column
+ccd_long <- ccd_long %>%
+  mutate(Year = str_extract(Year_Emission, "\\d{4}")) %>%
+  select(-Year_Emission) %>%
+  mutate(Year = as.numeric(Year))
+
+### Check to ensure no NAs in Year column
+print(sum(is.na(ccd_long$Year)))
+
+### Aggregate sum of by year
+annual_emissions <- ccd_long %>%
+  group_by(Year) %>%
+  summarise(Total_Emissions = sum(Emissions, na.rm = TRUE))
+
+### linear regression analysis
+model <- lm(Total_Emissions ~ Year, data = annual_emissions)
+summary(model)
+
+# Predict using the model
+annual_emissions$Predicted_Emissions <- predict(model, newdata = annual_emissions)
+
+# Plot the actual vs predicted emissions
+ggplot(annual_emissions, aes(x = Year, y = Total_Emissions)) +
+  geom_line(aes(y = Predicted_Emissions), color = "red", linetype = "dashed", linewidth = 1) +
+  geom_point(aes(y = Total_Emissions), color = "blue", size = 2) +
+  labs(x = "Year", y = "Total Emissions (Mg CO2e)", title = "Actual vs Predicted Total Emissions within the PNW") +
+  theme_minimal()
+
+```
+
+### PNW Tree Cover Loss Time Series Regression 
+```{r}
+# PNW Tree Cover Loss time series regression
+TCL_data <- read_csv("/Users/jessebrodrick/Desktop/490Pro/data/GlblFW/CTCL1.csv")
+
+# Filter for a  threshold of 50 and western states  
+western_states <- c("Washington", "Oregon", "California", "Idaho", 
+                    "Montana", "Nevada")
+
+TCL_subset <- TCL_data %>%
+  filter(subnational1 %in% western_states, threshold == 50) 
+
+### Identify the emission columns
+hloss_columns <- names(TCL_subset)[grepl("tc_loss_ha_20", names(TCL_subset))]
+
+### Pivot the data to long format,
+tcl_long <- TCL_subset %>%
+  pivot_longer(
+    cols = all_of(hloss_columns),
+    names_to = "Year_Hectares_loss",
+    values_to = "hectares_loss"
+  )
+
+### Extract the year from 'Year_hectares_loss' column
+tcl_long <- tcl_long %>%
+  mutate(Year = str_extract(Year_Hectares_loss, "\\d{4}")) %>%
+  mutate(Year = as.numeric(Year))
+
+### Check to ensure no NAs in Year column
+print(sum(is.na(tcl_long$Year)))
+
+### Aggregate sum of by year
+annual_hloss <- tcl_long %>%
+  group_by(Year) %>%
+  summarise(Total_loss = sum(hectares_loss, na.rm = TRUE))
+
+### linear regression analysis
+model <- lm(Total_loss ~ Year, data = annual_hloss)
+summary(model)
+
+# Predict using the model
+annual_hloss$Predicted_hectares_lossed <- predict(model, newdata = annual_hloss)
+
+# Plot the actual vs predicted emissions
+ggplot(annual_hloss, aes(x = Year, y = Total_loss)) +
+  geom_line(aes(y = Predicted_hectares_lossed), color = "red", linetype = "dashed", linewidth = 1) +
+  geom_point(aes(y = Total_loss), color = "blue", size = 2) +
+  labs(x = "Year", y = "Total Tree Cover Loss (Hectares)", title = "Actual vs Predicted Total Loss within the PNW")+
+  theme_minimal()
+```
+## Regression for Tree Cover versus Carbon Emissions (PNW)
+```{r}
+# Merge the two annual summaries by Year
+tclco2 <- merge(annual_emissions, annual_hloss, by = "Year")
+
+# Check the combined data
+print(head(tclco2))
+
+# Linear regression analysis with Total Emissions as the predictor of Total Loss
+combined_model <- lm(Total_loss ~ Total_Emissions, data = tclco2)
+summary(combined_model)
+
+# Optionally, you might want to explore the relationship visually
+ggplot(tclco2, aes(x = Total_Emissions, y = Total_loss)) +
+  geom_point() +
+  geom_smooth(method = "lm", col = "red") +
+  labs(x = "Total Emissions (Mg CO2e)", y = "Total Tree Cover Loss (Hectares)",
+       title = "Relationship between Carbon Emissions and Tree Cover Loss within the PNW") +
+  theme_minimal()
+```
+## Compared Regression of Tree Cover versus Carbon Emissions for PNW and the Entire US
+### US Tree Cover Time Series Regression
+```{r}
+# Tree Cover for Entire US
+TCL_USsubset <- TCL_data %>%
+  filter(threshold == 50) 
+
+### Identify the emission columns
+UShloss_columns <- names(TCL_USsubset)[grepl("tc_loss_ha_20", names(TCL_USsubset))]
+
+### Pivot the data to long format,
+tcl_USlong <- TCL_USsubset %>%
+  pivot_longer(
+    cols = all_of(UShloss_columns),
+    names_to = "Year_USHectares_loss",
+    values_to = "UShectares_loss")
+
+### Extract the year from 'Year_UShectares_loss' column
+tcl_USlong <- tcl_USlong %>%
+  mutate(Year = str_extract(Year_USHectares_loss, "\\d{4}")) %>%
+  mutate(Year = as.numeric(Year))
+
+### Check to ensure no NAs in Year column
+print(sum(is.na(tcl_USlong$Year)))
+
+### Aggregate sum of by year
+annual_USloss <- tcl_USlong %>%
+  group_by(Year) %>%
+  summarise(Total_loss = sum(UShectares_loss, na.rm = TRUE))
+
+### linear regression analysis
+USmodel <- lm(Total_loss ~ Year, data = annual_USloss)
+summary(USmodel)
+
+# Predict using the model
+annual_USloss$Predicted_hectares_lossed <- predict(model, newdata = annual_USloss)
+
+
+
+```
+### US Carbon Emission Time Series Regression  
+```{r}
+ccd_USsubset <- ccd_data %>%
+  filter(umd_tree_cover_density_2000__threshold == 50)
+
+### Identify the emission columns
+USemission_columns <- names(ccd_USsubset)[grepl("gfw_forest_carbon_gross_emissions_", names(ccd_USsubset))]
+
+### Pivot the data to long format,
+USccd_long <- ccd_USsubset %>%
+  pivot_longer(
+    cols = all_of(USemission_columns),
+    names_to = "US_Year_Emission",
+    values_to = "US_Emissions"
+  )
+
+### Extract the year from 'US_Year_Emission' column
+USccd_long <- USccd_long %>%
+  mutate(Year = str_extract(US_Year_Emission, "\\d{4}")) %>%
+  select(-US_Year_Emission) %>%
+  mutate(Year = as.numeric(Year))
+
+### Check to ensure no NAs in Year column
+print(sum(is.na(USccd_long$Year)))
+
+### Aggregate sum of by year
+USannual_emissions <- USccd_long %>%
+  group_by(Year) %>%
+  summarise(USTotal_Emissions = sum(US_Emissions, na.rm = TRUE))
+
+### linear regression analysis
+model <- lm(USTotal_Emissions ~ Year, data = USannual_emissions)
+summary(model)
+
+# Predict using the model
+USannual_emissions$USPredicted_Emissions <- predict(model, newdata = USannual_emissions)
+
+# Plot the actual vs predicted emissions
+ggplot(USannual_emissions, aes(x = Year, y = USTotal_Emissions)) +
+  geom_line(aes(y = USPredicted_Emissions), color = "red", linetype = "dashed", linewidth = 1) +
+  geom_point(aes(y = USTotal_Emissions), color = "blue", size = 2) +
+  labs(x = "Year", y = "Total Emissions (Mg CO2e)", title = "Actual vs Predicted Total Emissions within the PNW") +
+  theme_minimal()
+```
+
+## Plot
+```{r}
+# Merge the PNW and US tree cover loss and emissions data
+
+# PNW data
+pnw_merged <- merge(annual_hloss, annual_emissions, by = "Year")
+pnw_merged$Region <- "PNW"
+
+# US data
+us_merged <- merge(annual_USloss, USannual_emissions, by = "Year")
+us_merged$Region <- "US"
+
+summary(lm(Total_loss ~ USTotal_Emissions, data = us_merged))
+        
+# Making names consistent
+colnames(pnw_merged)[colnames(pnw_merged) == "Total_loss"] <- "Total_Loss"
+colnames(pnw_merged)[colnames(pnw_merged) == "Total_Emissions"] <- "Total_Emissions"
+
+colnames(us_merged)[colnames(us_merged) == "Total_loss"] <- "Total_Loss"
+colnames(us_merged)[colnames(us_merged) == "USTotal_Emissions"] <- "Total_Emissions"
+colnames(us_merged)[colnames(us_merged) == "USPredicted_Emissions"] <- "Predicted_Emissions"
+
+#  combining again
+combined_data <- rbind(pnw_merged, us_merged)
+
+# Check joined data
+head(combined_data)
+
+# Plot the combined data
+ggplot(combined_data, aes(x = Total_Emissions, y = Total_Loss, color = Region)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Total CO2 Emissions (Mg CO2e)", y = "Total Tree Cover Loss (Hectares)",
+       title = "Tree Cover Loss vs. CO2 Emissions: PNW vs. US") +
+  scale_color_manual(values = c("PNW" = "green", "US" = "blue")) +
+  theme_minimal()
+```
+

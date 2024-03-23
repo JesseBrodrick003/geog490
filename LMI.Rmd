@@ -47,9 +47,8 @@ states_sf <- states(cb = TRUE)
 counties_sf <- counties(cb = TRUE)
 
 # Filter for western states and their counties
-western_states <- c("Washington", "Oregon", "California", "Idaho", "Nevada",
-                    "Montana", "Utah", "Arizona", "Wyoming", "Colorado", "New Mexico",
-                    "North Dakota", "South Dakota", "Nebraska", "Kansas", "Oklahoma", "Texas")
+western_states <- c("Washington", "Oregon", "California", "Idaho", 
+                    "Montana", "Nevada")
 
 # Filter state and counties for western states sf
 wus_states_sf <- states_sf[states_sf$NAME %in% western_states, ]
@@ -90,7 +89,7 @@ wus_gbl_merge <- wus_gbl_merge %>%
 ```
 
 
-## Local Moran's I
+## Local Moran's I for Tree Cover Gain
 
 ```{r}
 
@@ -130,6 +129,7 @@ plot(MC)
 
 #The curve shows the distribution of Moran I values we could expect had the incomes been randomly distributed across the counties. Note that our observed statistic, 0.54995, falls  to the right of the distribution suggesting that the income values are clustered (a positive Moran’s I value suggests clustering whereas a negative Moran’s I value suggests dispersion).
 
+# A visual used  assess how “typical” or “atypical” your pattern may be relative to a randomly distributed pattern is to plot your observed pattern alongside a few simulated patterns generated under the null hypothesis
 set.seed(131)
 wus_gbl_merge$rand1 <- sample(wus_gbl_merge$gain_2000_2020_ha, length(wus_gbl_merge$gain_2000_2020_ha), replace = FALSE)
 wus_gbl_merge$rand2 <- sample(wus_gbl_merge$gain_2000_2020_ha, length(wus_gbl_merge$gain_2000_2020_ha), replace = FALSE)
@@ -138,7 +138,114 @@ wus_gbl_merge$rand3 <- sample(wus_gbl_merge$gain_2000_2020_ha, length(wus_gbl_me
 tm_shape(wus_gbl_merge) + tm_fill(col=c("gain_2000_2020_ha", "rand1", "rand2", "rand3"),
                       style="quantile", n=8, palette="Greens", legend.show = FALSE) +
               tm_facets( nrow=1)
+# Calculate Local Moran's I
+local_morans_i <- localmoran(wus_gbl_merge$gain_2000_2020_ha, lw)
 
+# Convert to a dataframe for easier manipulation
+local_morans_df <- as.data.frame(local_morans_i)
+
+# Add the Local Moran's I values and p-values to your spatial data frame
+wus_gbl_merge$localI <- local_morans_df[,1]
+wus_gbl_merge$p_value <- local_morans_df[,5]
+
+# Classify into hot spots, cold spots, etc., based on Local Moran's I and p-values
+# Here we consider hot spots as positive local I values with significant p-values (e.g., p < 0.05)
+# and cold spots as negative local I values with significant p-values.
+wus_gbl_merge$spot_type <- case_when(
+  wus_gbl_merge$localI > 0 & wus_gbl_merge$p_value < 0.05 ~ "Hot Spot",
+  wus_gbl_merge$localI < 0 & wus_gbl_merge$p_value < 0.05 ~ "Cold Spot",
+  TRUE ~ "Not Significant"
+)
+
+# Visualize the hot and cold spots
+tm_shape(wus_gbl_merge) +
+  tm_fill(col = "spot_type", palette = c("Hot Spot" = "red", "Cold Spot" = "blue", "Not Significant" = "grey"), 
+          title = "Spot Type") +
+  tm_borders() +
+  tm_layout(legend.title.size = 0.7, legend.text.size = 0.6) +
+  tm_legend(position = c("right", "bottom"))
+
+```
+## Local Moran's I for Tree Cover Loss
+```{r}
+# Merging projected SF to GFW data frame
+wus_loss_merge <- wus_counties_sf_pro %>%
+  left_join(df_subset, by = c("STATE_NAME" = "subnational1", "NAME" = "subnational2"))
+  
+# Replacing NA's with zero
+total_loss_by_county <- wus_loss_merge %>%
+  mutate(across(starts_with("tc_loss_ha_"), as.numeric, .names = "numeric_{.col}")) %>%
+  rowwise() %>%
+  mutate(loss_2000_2020_ha = sum(c_across(starts_with("numeric_tc_loss_ha_")), na.rm = TRUE)) %>%
+  ungroup() %>%
+  select(-starts_with("numeric_tc_loss_ha_")) # Removing temporary numeric columns
+
+
+
+nb1 <- poly2nb(total_loss_by_county, queen=TRUE)
+
+nb1[1]
+
+lw1 <- nb2listw(nb1, style="W", zero.policy=TRUE)
+
+lw1$weights[1]
+
+loss.lag <- lag.listw(lw, total_loss_by_county$loss_2000_2020_ha)
+loss.lag
+
+plot(loss.lag ~ total_loss_by_county$loss_2000_2020_ha, pch=16, asp=1)
+M1 <- lm(loss.lag ~ total_loss_by_county$loss_2000_2020_ha)
+abline(M1, col="blue")
+
+coef(M1)[2]
+
+I <- moran(total_loss_by_county$loss_2000_2020_ha, lw1, length(nb), Szero(lw1))[1]
+I
+
+moran.test(total_loss_by_county$loss_2000_2020_ha,lw1, alternative="greater")
+
+####There is less than a 6% likelihood that the observed pattern could be the result of random chance
+
+#p-value of 2.2e-16 suggesting that there would be a an extremely low chance of being wrong in rejecting the null hypothesis or that there is a 0.000.. chance that our observed pattern is consistent with a random process 
+
+MC<- moran.mc(total_loss_by_county$loss_2000_2020_ha, lw1, nsim=999, alternative="greater")
+
+# View results (including p-value)
+MC
+
+# Plot the Null distribution (note that this is a density plot instead of a histogram)
+plot(MC)
+
+#The curve shows the distribution of Moran I values we could expect had the incomes been randomly distributed across the counties. Note that our observed statistic, 0.54995, falls  to the right of the distribution suggesting that the income values are clustered (a positive Moran’s I value suggests clustering whereas a negative Moran’s I value suggests dispersion).
+
+set.seed(131)
+total_loss_by_county$rand1 <- sample(total_loss_by_county$loss_2000_2020_ha, length(total_loss_by_county$loss_2000_2020_ha), replace = FALSE)
+total_loss_by_county$rand2 <- sample(total_loss_by_county$loss_2000_2020_ha, length(total_loss_by_county$loss_2000_2020_ha), replace = FALSE)
+total_loss_by_county$rand3 <- sample(total_loss_by_county$loss_2000_2020_ha, length(total_loss_by_county$loss_2000_2020_ha), replace = FALSE)
+
+tm_shape(total_loss_by_county) + tm_fill(col=c("loss_2000_2020_ha", "rand1", "rand2", "rand3"),
+                      style="quantile", n=8, palette="Reds", legend.show = FALSE) +
+              tm_facets( nrow=1)
+
+# Calculate Local Moran's I for tree cover loss
+local_morans_i_loss <- localmoran(total_loss_by_county$loss_2000_2020_ha, lw1)
+
+# Incorporate Local Moran's I stats into the total_loss_by_county dataframe
+total_loss_by_county$localI <- local_morans_i_loss[,1]  # Local Moran's I value
+total_loss_by_county$p.value <- local_morans_i_loss[,5]  # P-value
+
+# Define hot (High-High) and cold (Low-Low) spots based on Local Moran's I and p-value
+total_loss_by_county$hot_cold_zone <- ifelse(total_loss_by_county$localI > 0 & total_loss_by_county$p.value < 0.05, "Hot Spot",
+                                             ifelse(total_loss_by_county$localI < 0 & total_loss_by_county$p.value < 0.05, "Cold Spot", "Not Significant"))
+
+# Visualize Hot and Cold Zones with tmap
+tm_shape(total_loss_by_county) +
+  tm_fill(col = "hot_cold_zone",
+          palette = c("Hot Spot" = "red", "Cold Spot" = "blue", "Not Significant" = "grey"),
+          title = "Tree Cover Loss Hot and Cold Zones") +
+  tm_borders() +
+  tm_legend(position = c("right", "bottom")) +
+  tm_layout(frame = FALSE)
 ```
 
 

@@ -48,9 +48,8 @@ states_sf <- states(cb = TRUE)
 counties_sf <- counties(cb = TRUE)
 
 # Filter for western states and their counties
-western_states <- c("Washington", "Oregon", "California", "Idaho", "Nevada",
-                    "Montana", "Utah", "Arizona", "Wyoming", "Colorado", "New Mexico",
-                    "North Dakota", "South Dakota", "Nebraska", "Kansas", "Oklahoma", "Texas")
+western_states <- c("Washington", "Oregon", "California", "Idaho", 
+                    "Montana", "Nevada")
 
 # Filter state and counties for western states sf
 wus_states_sf <- states_sf[states_sf$NAME %in% western_states, ]
@@ -76,7 +75,7 @@ ggplot() +
   geom_sf(data = wus_states_sf_pro, fill = NA, color = "black", size = 0.6) +
   geom_sf(data = wus_counties_sf_pro, fill = NA, color = "grey", size = 0.3) +
   theme_minimal() +
-  labs(title = "Western US States and Counties")
+  labs(title = "PNW")
 
 ```
 ## Subset and merge Global Forest Watch data and projected US Census boundaries
@@ -135,7 +134,7 @@ ggplot(wus_gbl_merge) +
 
 
 ```
-### Assess spatial distribution of Canopy Cover Gain  Descriptive statistics
+## Assess spatial distribution of Canopy Cover Gain and Descriptive statistics
 
 ```{r}
 # Summary statistics
@@ -164,9 +163,38 @@ ggplot(PNW_SF, aes(x = STATE_NAME, y = gain_2000_2020_ha)) +
         legend.position = "none",
         axis.text.x = element_blank(), 
         axis.ticks.x = element_blank()) +
-  coord_cartesian(ylim = c(-0, 25000)) 
+  coord_cartesian(ylim = c(-0, 25000))
+```
 
-  
+### Plotting which counties have the most gain in 20 years
+```{r}
+# Combine state and county names into a new column for help 
+PNW_SF <- PNW_SF %>%
+  mutate(region = paste(NAME, STATE_NAME, sep = ", "))
+
+
+# Calculate total tree cover loss for each county
+total_gain_by_county <- PNW_SF %>%
+  group_by(region) %>%
+  summarize(Total_Gain = gain_2000_2020_ha, na.rm = TRUE) %>%
+  arrange(desc(Total_Gain))
+
+# Top 10 counties with the highest total tree cover gain
+top_counties_gain <- total_gain_by_county %>%
+  top_n(10, Total_Gain)
+
+# Plotting
+ggplot(top_counties_gain, aes(x = reorder(region, Total_Gain), y = Total_Gain)) +
+  geom_bar(stat = "identity") +
+  coord_flip() + 
+  theme_minimal() +
+  labs(title = "Top 10 Counties by Total Tree Cover Gain (2001-2022)",
+       x = "County",
+       y = "Total Tree Cover Gain (ha)")
+```
+
+
+```{r}
 # Creating standard distribution table to visualize amount of object values within sd break points
 mean_gain <- mean(wus_gbl_merge$gain_2000_2020_ha, na.rm = TRUE)
 
@@ -183,7 +211,7 @@ table(wus_gbl_merge$categories)
 
 ### Plotting distribution of canopy cover change map
 ```{r}
-#
+
 breakpoints <- c(-Inf, mean_gain, mean_gain + sd_gain, mean_gain + 2*sd_gain, Inf)
 labels <- c("Below Average (<-2 SD to mean)", "Average (mean to 1 SD)", "Above Average(1 SD to 2 SD)", "Exceptionally High(>2 SD)")
 

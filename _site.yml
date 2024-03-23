@@ -6,18 +6,20 @@ navbar:
       href: index.html
     - text: "Topics"
       menu:
-        - text: "Tree Cover Gain"
+        - text: "Introduction"
+          href: Intro.html
+        - text: "Forest Cover Gain Maps"
           href: TreeCoverGain.html
+        - text: "Forest Cover Loss Maps"
+          href: TreeCoverLoss.html
         - text: "Local Moran's I"
           href: LMI.html
-    - text: "Introduction"
-      href: Intro.html
-    - text: "Materials and Methods"
-      href: MM.html  
-    - text: "Results"
-      href: results.html
-    - text: "Concusion"
-      href: conc.html 
+        - text: "Carbon Emission and Tree Cover Regressions"
+          href: CarbonF.html
+        - text: "Methods, Results, Disscusion, and Conclusion "
+          href: MM.html  
+   
+    
   right:
     - text: "Acknowledgements"
       href: know.html
