@@ -35,13 +35,7 @@ pdf.options(useDingbats = TRUE)
 #### The Tree Cover Height dataset estimates percent tree cover, which measures the density of tree canopy cover within a 30-meter pixel.The data set defines trees as woody vegetation of at least three meters in height and is derived from Global Ecosystem Dynamics Investigation (GEDI) LiDAR measurements and Landsat imagery. This data set estimates the 95th percentile of tree canopy height, and accordingly will represent the upper bounds of height for pixels with fractional tree cover, or pixels with variable canopy height. 
 
 
-## Materials and Methods: 
 
-#### The materials consist of a GFW dataset on a subnational2 county level for tree cover change. Several packages including (-tidyverse, -sf, -ggplot2,- RColorBrewer,-tigris, -ggplot2, -classInt, -spdep).  
-
-#### Global Forest watch provides thresholds or amount of tree canopy coverage for 0, 10, 20, 30, 50, and 75 percent for 20 years of forest cover gain/loss in hecatares. In order to stay consistent, as well complete a valid spatial join I used 50% threshold of very dense forest (VDF) and, moderately dense forests (MDF) in which I joined by state and county to Census Boundaries from the TIGRIS package. 
-
-#### Local Morans I:Identifying local clusters and local spatial outliers using row-standardized weights.
 
 
 
