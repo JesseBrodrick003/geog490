@@ -2,7 +2,7 @@
 title: "Home"
 output: html_document
 ---
-
+![GFW Circle Logo](/Users/jessebrodrick/Desktop/490Pro/GEOG490/gfw.png "GFW logo")
 
 ## Project web page for GEOG 4/595 *R for Earth-System Science* 
 
