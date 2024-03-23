@@ -1,16 +1,56 @@
 ---
-title: "Methods and Materials"
+title: "Discussion, and Conclusion"
 author: "Jesse Brodrick"
 date: "2024-03-19"
 output: html_document
 ---
 
-## Materials and Methods: 
+ 
 
-#### The materials consist of a GFW dataset on a subnational2 county level for tree cover change. Several packages including (-tidyverse, -sf, -ggplot2,- RColorBrewer,-tigris, -ggplot2, -classInt, -spdep).  
+## Conclusion
 
-#### Global Forest watch provides thresholds or amount of tree canopy coverage for 0, 10, 20, 30, 50, and 75 percent for 20 years of forest cover gain/loss in hecatares. In order to stay consistent, as well complete a valid spatial join I used 50% threshold of very dense forest (VDF) and, moderately dense forests (MDF) in which I joined by state and county to Census Boundaries from the TIGRIS package. 
+## Local Morans I: Identifying local clusters and local spatial outliers using row-standardized weights.
 
-#### Local Morans I:Identifying local clusters and local spatial outliers using row-standardized weights.
+### Identifying Spatial Clusters: Moran's I can reveal clusters of forest loss or gain. For example, if deforestation is occurring primarily in specific regions due to human activities or natural causes, Moran's I can help identify these hotspots.
+
+### Guiding Conservation Efforts: By identifying areas of significant forest change, policymakers and conservationists can target interventions more effectively. For instance, they can focus reforestation efforts in regions where loss is clustered or protect areas of significant gain.
+
+### Understanding Ecological Processes: Forest ecology is inherently spatial. Processes like seed dispersal, wildfire spread, and disease outbreaks all exhibit spatial patterns. Moran's I helps understand these processes by identifying patterns that may indicate ecological interactions.
+
+### Informing Landscape Connectivity: In conservation biology, landscape connectivity is crucial for maintaining biodiversity. Moran's I can indicate the degree to which forested areas are fragmented or connected, which has implications for wildlife movement and genetic exchange.
+
+### Evaluating Human Impact: Spatial patterns of forest cover change can reflect the impact of human activities, such as urban expansion, agriculture, and logging. Moran's I can help assess how these activities are altering forest landscapes over time.
+### Assessing Policy and Management Effectiveness: By comparing spatial patterns of forest change before and after the implementation of forest policies or management practices, Moran's I can be used to evaluate their effectiveness.
+
+### Climate Change Insights: Forest cover gain and loss are both important factors in the global carbon cycle. Understanding the spatial dynamics of forest changes contributes to better models of carbon sequestration and emissions, which are vital for climate change predictions and mitigation strategies.
+
+### Time Series Regression and the comparison between CO2 emissions and Forest Cover Loss:
+
+### The inclusion of regression analysis in your project to discern the correlation between CO2 emissions and forest cover loss, both within the Pacific Northwest (PNW) and across the United States, is significant for several reasons:
+
+### Understanding Environmental Impacts: CO2 emissions are a major driver of climate change, and forests play a critical role in carbon sequestration. Analyzing the relationship between emissions and forest cover loss can reveal how changes in forest areas may be contributing to or mitigating climate change.
+
+### Informing Policy and Management: The insights from the regression analysis can inform policymakers and environmental managers about the effectiveness of current forest management practices and policies. If a strong correlation is found, it might indicate that efforts to reduce CO2 emissions could have a beneficial impact on forest conservation and vice versa.
+
+### Comparative Analysis: By comparing the PNW with the entire United States, the analysis can highlight regional differences in the relationship between emissions and forest changes. This can lead to a more nuanced understanding of how local factors—such as policy, economy, and ecology—affect forest cover dynamics.
+
+### Economic and Ecological Planning: Regions with significant forest cover loss may face economic consequences, such as loss of timber resources and ecosystem services. Understanding the correlation with CO2 emissions can guide sustainable planning and the development of green economies.
+
+### Predictive Modeling: Time-series regression allows for the projection of future trends in forest growth or decline based on historical data. This can be vital for anticipating future changes, preparing for potential impacts, and planning restoration or conservation efforts.
+
+### Assessing the Carbon Budget: Forests are a major component of the terrestrial carbon budget. Understanding how emissions correlate with forest loss is key to modeling carbon flows and stocks and can be crucial for commitments under international agreements like the Paris Accord.
+
+### Local vs. National Perspectives: The comparison of regional data with national trends can provide unique insights into how localized environmental factors or policies might influence larger-scale processes and outcomes.
+
+## Limitations:
+
+### Improved satellite data: The algorithm uses every available Landsat image (from the Landsat 5, 7 and, since 2013, Landsat 8 satellites) to detect tree cover loss. The Landsat 8 satellite has the same resolution as previous Landsat missions, but has an improved sensor that can better resolve features on the ground. Incorporation of Landsat 8 data into the loss algorithm resulted in better detections of tree cover loss smaller than an individual pixel (e.g. selective logging) starting in 2013.
+
+### Algorithm adjustments: The original algorithm used to map tree cover loss from satellite images for 2001-2012 has been improved upon in subsequent updates. These improvements allowed for annual updates starting in 2013 (coupled with small additions to the 2011 and 2012 data) and have resulted in enhanced detection of loss— particularly from 2015 onwards.
+
+### Tree cover gain is more difficult to measure than loss: Whereas tree cover loss is distinctly visible at a specific moment in time, tree cover gain is a gradual process and is thus more difficult to discern from one satellite image to the next. Annual reporting of tree cover loss has not been matched by annual reporting of tree cover gain, resulting in an unbalanced view of global forest change dynamics.
+
+###Tree cover loss and gain do not equal net forest. Due to variation in research methodology and date of content, tree cover, tree cover loss, and tree cover gain data sets cannot be compared accurately against each other. Accordingly, “net” loss cannot be calculated by subtracting figures for tree cover gain from tree cover loss, and current (post-2000) tree cover cannot be determined by subtracting figures for annual tree cover loss from year 2000 tree cover.
+
 
 

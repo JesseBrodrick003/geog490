@@ -4,7 +4,7 @@ author: "Jesse Brodrick"
 date: "2024-03-20"
 output: html_document
 ---
-# Time Series Regression of CO2 emssions and Tree Cover comparing the the PNW verses the US as a whole (2000-2022)
+## Time Series Regression of CO2 emssions and Tree Cover comparing the the PNW verses the US as a whole (2000-2022)
 
 ### Carbon Emission Time Series Regression in the PNW
 ```{r}
@@ -114,7 +114,7 @@ ggplot(annual_hloss, aes(x = Year, y = Total_loss)) +
   labs(x = "Year", y = "Total Tree Cover Loss (Hectares)", title = "Actual vs Predicted Total Loss within the PNW")+
   theme_minimal()
 ```
-## Regression for Tree Cover versus Carbon Emissions (PNW)
+### Regression for Tree Cover versus Carbon Emissions (PNW)
 ```{r}
 # Merge the two annual summaries by Year
 tclco2 <- merge(annual_emissions, annual_hloss, by = "Year")
@@ -126,7 +126,7 @@ print(head(tclco2))
 combined_model <- lm(Total_loss ~ Total_Emissions, data = tclco2)
 summary(combined_model)
 
-# Optionally, you might want to explore the relationship visually
+# xplore the relationship visually
 ggplot(tclco2, aes(x = Total_Emissions, y = Total_loss)) +
   geom_point() +
   geom_smooth(method = "lm", col = "red") +
@@ -219,7 +219,7 @@ ggplot(USannual_emissions, aes(x = Year, y = USTotal_Emissions)) +
   theme_minimal()
 ```
 
-## Plot
+## Tree Cover Loss vs. CO2 Emissions: PNW vs. US Plot
 ```{r}
 # Merge the PNW and US tree cover loss and emissions data
 
@@ -256,4 +256,22 @@ ggplot(combined_data, aes(x = Total_Emissions, y = Total_Loss, color = Region)) 
   scale_color_manual(values = c("PNW" = "green", "US" = "blue")) +
   theme_minimal()
 ```
+
+## Discussion: 
+
+#### When looking at the scatterplot comparing total tree cover loss in hectares to total CO2 emissions for the PNW and US. Each point represents an aggregated data point over time. In both cases, there appears to be a positive correlation between CO2 emissions and tree cover loss, indicating that higher emissions are associated with greater loss of tree cover. 
+
+#### Specifically for the PNW, the slope of the trend line is less steep, suggesting a smaller increase in tree cover loss for each unit of CO2 emissions when compared to the US overall. However, in terms of scale the data points and trend are closely located to each other. This means that the 5 states within the PNW chosen represent a large portion within the US as a whole. Additionally, the PNW data values appear to be more tightly clustered around the trend line, indicating a more consistent relationship between emissions and tree cover loss within this region. For the US, the trend line is steeper, which could indicate a larger increase in tree cover loss for each unit of CO2 emissions. The data points are more spread out, which most likely reflects the broader range of conditions influencing this relationship across the entire country. The difference in their correlation can be seen with the R^2 value of the PNW being 0.86 compared to the lower US R^2 value of 0.2. These trends could be influenced by a variety of factors, including regional differences in land use, forest management practices, and industrial activities. The graph suggests that region-specific factors significantly influence the relationship between CO2 emissions and tree cover loss.
+
+####  The relationship between CO2 emissions and time for the United States at an aggregated census level over a 20-year period indicate that there is a statistically significant upward trend in CO2 emissions over the 20 years covered by the dataset, with a substantial portion of the variation in emissions being explained by the passage of time. However, given the size of the residual error, other factors not included in the model likely also influence CO2 emissions.
+
+#### The relationship between total tree cover loss and time at an aggregated census level over a 20-year period indicate that there is not enough strong evidence for a time trend in tree cover loss, and other variables not included in the model may better explain the changes in tree cover loss. 
+
+
+
+
+
+
+
+
 

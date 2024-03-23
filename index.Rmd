@@ -8,11 +8,11 @@ output: html_document
 
 This website covers various aspects of tree Cover gain/loss and carbon emissions over the past 20 years within the Pacific Northwest using R Studio and data from Global Forest Watch, an open-source web application to monitor global forests in near real-time. Below are the main sections of the project:
 
-- [Introduction to the Project](Intro.html)
+- [Project Overview: Introduction, Methods, Materials and Conclusion](Intro.html)
 - [Analyzing Tree Cover Gain](TreeCoverGain.html)
 - [Analyzing Tree Cover Loss](TreeCoverLoss.html)
+- [Analyzing Tree Cover Loss and Carbon Emission Regression](CarbonF.html)
 - [Exploring Spatial Patterns with Local Moran's I](LMI.html)
-- [Methods, Results, Disscusion, and Conclusion](MM.html)
 - [About](about.html)
 
 Explore each section to learn more about the work and findings!

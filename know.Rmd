@@ -6,3 +6,15 @@ output: html_document
 ---
 
 # Acknowledgments and References: 
+
+University of Oregon GEOG 490, Winter, Prof. Patrick Bartlein 
+
+ Hansen, M.C., P.V. Potapov, R. Moore, et al. 2013. "High-Resolution Global Maps of 21st-Century Forest Cover Change." Science 342: 850–53. Data available on-line from: https://glad.earthengine.app/view/global-forest-change. 
+
+ Harris, N.L., D.A. Gibbs, A. Baccini, et al. 2021. "Global maps of twenty-first century forest carbon fluxes." Nature Climate Change 11: 234-240. https://doi.org/10.1038/s41558-020-00976-6. Data available on-line from: https://data.globalforestwatch.org/
+
+ Gibbs, D.A., N. Harris. 2023. https://www.globalforestwatch.org/blog/data-and-research/whats-new-carbon-flux-monitoring (explanation of changes to carbon flux model with 2022 TCL release)
+
+ Global Administrative Areas Database, version 3.6. Available at http://gadm.org/
+
+ Global Forest Watch. https://www.globalforestwatch.org

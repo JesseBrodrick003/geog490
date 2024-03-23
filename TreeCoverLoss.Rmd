@@ -1,10 +1,12 @@
 ---
-title: "Tree Cover Loss"
+title: "Tree Cover change in the Western U.S (50% threshold in 30m resolution)"
 author: "Jesse Brodrick"
 date: "2024-03-20"
 output: html_document
 ---
+## 20 year Tree Cover Loss Mapping Anlaysis with Global Forest Watch Data 
 
+### Loading in libraries
 ```{r}
 library(tidyverse)
 library(sf)
@@ -20,7 +22,7 @@ getwd()
 ctcldf <- read_csv("/Users/jessebrodrick/Desktop/490Pro/data/GlblFW/CTCL1.csv")
 ```
 
-
+### Simple features and projection
 ```{r}
 options(tigris_class = "sf")
 options(tigris_use_cache = TRUE)
@@ -50,7 +52,7 @@ wus_counties_sf_pro = st_transform(wus_counties_sf, laea)
 ```
 
 
-
+### Subsetting Data
 ```{r}
 # Subset data based on the western states with a canopy density threshold of 50
 Wustclsubset <- ctcldf[ctcldf$subnational1 %in% western_states, ] %>% 
@@ -85,11 +87,32 @@ ggplot(top_counties_loss1, aes(x = reorder(region, Total_Loss1), y = Total_Loss1
 
 ```
 
-## Assess spatial distribution of Canopy Cover Gain and Descriptive statistics
-### Plotting top tree loss counties
+### Assess spatial distribution of Canopy Cover Gain and Descriptive statistics
+
+#### Plotting top tree loss counties
 
 ```{r}
 # Summary statistics
+
+# Merging projected SF to GFW data frame
+wus_loss_merge <- wus_counties_sf_pro %>%
+  left_join(Wustclsubset, by = c("STATE_NAME" = "subnational1", "NAME" = "subnational2"))
+  
+# Replacing NA's with zero
+total_loss_by_county <- wus_loss_merge %>%
+  mutate(across(starts_with("tc_loss_ha_"), as.numeric, .names = "numeric_{.col}")) %>%
+  rowwise() %>%
+  mutate(loss_2000_2020_ha = sum(c_across(starts_with("numeric_tc_loss_ha_")), na.rm = TRUE)) %>%
+  ungroup() %>%
+  select(-starts_with("numeric_tc_loss_ha_")) # Removing temporary numeric columns
+
+head(wus_loss_merge)
+
+head(total_loss_by_county)
+
+
+
+
 summary(total_loss_by_county$loss_2000_2020_ha)
 
 # Histogram 
@@ -118,7 +141,7 @@ ggplot(PNW_SF, aes(x = STATE_NAME, y = loss_2000_2020_ha)) +
   coord_cartesian(ylim = c(-0, 100000))
 ```
 
-###Visualizing on a plot
+#### Visualizing on a plot
 ```{r}
 
 # Merging projected SF to GFW data frame
@@ -152,7 +175,7 @@ ggplot(total_loss_by_county) +
                        labels = rev(paste(round(ctpnts$brks[-length(ctpnts$brks)], 1), "to",
                                       round(ctpnts$brks[-1], 1))),
                        limits = range(total_loss_by_county$loss_2000_2020_ha)) +
-  labs(title = "20 Year Primary Forest Tree Cover Loss (50% threshold)", fill = "Loss (hectares)") +
+  labs(title = "20 Year Forest Cover Loss (50% threshold)", fill = "Loss (hectares)") +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"),
         legend.position = "right",
         legend.background = element_rect(fill = "white", colour = "black"),
@@ -166,12 +189,12 @@ ggplot(total_loss_by_county) +
 
 ```
 
+### Variation of canopy cover Loss
 
-
-### Creating standard distribution table to visualize amount of object values within sd break points
+#### Creating standard distribution table to visualize amount of object values within sd break points
 
 ```{r}
-#descriptive stats
+# descriptive stats
 mean_loss <- mean(total_loss_by_county$loss_2000_2020_ha, na.rm = TRUE)
 str(total_loss_by_county$loss_2000_2020_ha)
 sd_loss <- sd(total_loss_by_county$loss_2000_2020_ha, na.rm = TRUE)
@@ -186,7 +209,7 @@ table(total_loss_by_county$categories)
 ```
 
 
-### Plotting distribution of canopy cover change map
+#### Plotting distribution of canopy cover change map
 
 ```{r}
 breakpoints <- c(-Inf, mean_loss, mean_loss + sd_loss, mean_loss + 2*sd_loss, Inf)

@@ -28,13 +28,14 @@ library(ggplot2)
 library(classInt)
 library(spdep)
 library(tmap)
+library(DT)
 getwd()
 
 df <- read_csv("/Users/jessebrodrick/Desktop/490Pro/data/GlblFW/CTCL1.csv")
 
 ```
 
-## Basemap and projection
+### Basemap and projection
 ```{r}
 # Options to return tigris objects as sf objects
 options(tigris_class = "sf")
@@ -66,7 +67,7 @@ wus_counties_sf_pro = st_transform(wus_counties_sf, laea)
 ```
 
 
-## Subset and merge Global Forest Watch data and projected US Census boundaries
+### Subset and merge Global Forest Watch data and projected US Census boundaries
 
 ### Global Forest watch provides thresholds or amount of tree canopy coverage (density of 30m resolution) for 0, 10, 20, 30, 50, and 75 percent for 20 years of forest cover gain/loss in hecatares. 
 
@@ -127,17 +128,18 @@ MC
 # Plot the Null distribution (note that this is a density plot instead of a histogram)
 plot(MC)
 
-#The curve shows the distribution of Moran I values we could expect had the incomes been randomly distributed across the counties. Note that our observed statistic, 0.54995, falls  to the right of the distribution suggesting that the income values are clustered (a positive Moran’s I value suggests clustering whereas a negative Moran’s I value suggests dispersion).
+#The curve shows the distribution of Moran I values we could expect had the gain values been randomly distributed across the counties. Note that our observed statistic, 0.403156236, falls  to the right of the distribution suggesting that the gain values are clustered (a positive Moran’s I value suggests clustering whereas a negative Moran’s I value suggests dispersion).
 
-# A visual used  assess how “typical” or “atypical” your pattern may be relative to a randomly distributed pattern is to plot your observed pattern alongside a few simulated patterns generated under the null hypothesis
+# A visual used  assess how “typical” or “atypical” your pattern may be relative to a randomly distributed pattern is to plot the observed pattern alongside a few simulated patterns generated under the null hypothesis
 set.seed(131)
 wus_gbl_merge$rand1 <- sample(wus_gbl_merge$gain_2000_2020_ha, length(wus_gbl_merge$gain_2000_2020_ha), replace = FALSE)
 wus_gbl_merge$rand2 <- sample(wus_gbl_merge$gain_2000_2020_ha, length(wus_gbl_merge$gain_2000_2020_ha), replace = FALSE)
 wus_gbl_merge$rand3 <- sample(wus_gbl_merge$gain_2000_2020_ha, length(wus_gbl_merge$gain_2000_2020_ha), replace = FALSE)
-
+# Plotting (the first one is real)
 tm_shape(wus_gbl_merge) + tm_fill(col=c("gain_2000_2020_ha", "rand1", "rand2", "rand3"),
                       style="quantile", n=8, palette="Greens", legend.show = FALSE) +
               tm_facets( nrow=1)
+
 # Calculate Local Moran's I
 local_morans_i <- localmoran(wus_gbl_merge$gain_2000_2020_ha, lw)
 
@@ -148,7 +150,7 @@ local_morans_df <- as.data.frame(local_morans_i)
 wus_gbl_merge$localI <- local_morans_df[,1]
 wus_gbl_merge$p_value <- local_morans_df[,5]
 
-# Classify into hot spots, cold spots, etc., based on Local Moran's I and p-values
+# Classify into hot spots, cold spots based on Local Moran's I and p-values
 # Here we consider hot spots as positive local I values with significant p-values (e.g., p < 0.05)
 # and cold spots as negative local I values with significant p-values.
 wus_gbl_merge$spot_type <- case_when(
@@ -165,6 +167,17 @@ tm_shape(wus_gbl_merge) +
   tm_layout(legend.title.size = 0.7, legend.text.size = 0.6) +
   tm_legend(position = c("right", "bottom"))
 
+# Creating table for data interpretation
+hot_cold_zones1 <- wus_gbl_merge %>%
+  filter(spot_type %in% c("Hot Spot", "Cold Spot")) %>%
+  select(NAME, STATE_NAME, gain_2000_2020_ha, localI, p_value, spot_type) %>%
+  st_set_geometry(NULL)  
+
+
+if (requireNamespace("DT", quietly = TRUE)) {
+  DT::datatable(hot_cold_zones1, options = list(pageLength = 5), 
+                caption = "Counties and States in Hot and Cold Zones")
+}
 ```
 ## Local Moran's I for Tree Cover Loss
 ```{r}
@@ -216,13 +229,14 @@ MC
 # Plot the Null distribution (note that this is a density plot instead of a histogram)
 plot(MC)
 
-#The curve shows the distribution of Moran I values we could expect had the incomes been randomly distributed across the counties. Note that our observed statistic, 0.54995, falls  to the right of the distribution suggesting that the income values are clustered (a positive Moran’s I value suggests clustering whereas a negative Moran’s I value suggests dispersion).
+#The curve shows the distribution of Moran I values we could expect had the forest loss been randomly distributed across the counties. Note that our observed statistic, 0.42703, falls  to the right of the distribution suggesting that the loss values are clustered (a positive Moran’s I value suggests clustering whereas a negative Moran’s I value suggests dispersion).
 
 set.seed(131)
 total_loss_by_county$rand1 <- sample(total_loss_by_county$loss_2000_2020_ha, length(total_loss_by_county$loss_2000_2020_ha), replace = FALSE)
 total_loss_by_county$rand2 <- sample(total_loss_by_county$loss_2000_2020_ha, length(total_loss_by_county$loss_2000_2020_ha), replace = FALSE)
 total_loss_by_county$rand3 <- sample(total_loss_by_county$loss_2000_2020_ha, length(total_loss_by_county$loss_2000_2020_ha), replace = FALSE)
 
+# Plotting (first map is real data)
 tm_shape(total_loss_by_county) + tm_fill(col=c("loss_2000_2020_ha", "rand1", "rand2", "rand3"),
                       style="quantile", n=8, palette="Reds", legend.show = FALSE) +
               tm_facets( nrow=1)
@@ -246,6 +260,30 @@ tm_shape(total_loss_by_county) +
   tm_borders() +
   tm_legend(position = c("right", "bottom")) +
   tm_layout(frame = FALSE)
+
+# Creating table for data interpretation
+hot_cold_zones <- total_loss_by_county %>%
+  filter(hot_cold_zone %in% c("Hot Spot", "Cold Spot")) %>%
+  select(NAME, STATE_NAME, loss_2000_2020_ha, localI, p.value, hot_cold_zone) %>%
+  st_set_geometry(NULL)  
+
+
+if (requireNamespace("DT", quietly = TRUE)) {
+  DT::datatable(hot_cold_zones, options = list(pageLength = 5), 
+                caption = "Detailed Counties and States in Hot and Cold Zones")
+}
 ```
+
+
+## Discussion:
+
+#### The Moran's I analysis summary for the 20-year tree cover loss shows a Moran's I statistic of 0.427031245. This value is significantly different from the expectation (close to 0 in the case of random distribution), as evidenced by the p-value being less than 2.2e-16, indicating a strong spatial autocorrelation. This result suggests that there is a non-random pattern to the tree cover loss over the area studied, with a tendency towards clustering of similar values (either high or low loss) in space.
+
+#### The Monte-Carlo simulation of Moran's I reinforces this finding with a p-value of 0.001, based on 1000 simulations. This low p-value further confirms the unlikelihood that the observed spatial pattern is due to random chance. Thus, the tree cover loss is not randomly distributed but rather exhibits significant spatial clustering, which could be due to various ecological, geographical, or human-induced factors.
+
+#### The summary for the Moran's I analysis for tree cover gain shows that the Moran's I statistic is 0.403156236, which is significantly greater than the expected value (close to 0 if the spatial distribution was random). The p-value is less than 2.2e-16, indicating strong statistical evidence against the null hypothesis of randomness.
+
+#### The Monte-Carlo simulation, with 1000 simulations, supports this finding, yielding a p-value of 0.001. This confirms that the observed spatial pattern (clustering of similar values) in tree cover gain is highly unlikely to be due to random chance, suggesting a significant spatial autocorrelation. This means that areas with high tree cover gain are likely to be geographically close to other areas of high gain, and similarly for low gain areas.
+
 
 

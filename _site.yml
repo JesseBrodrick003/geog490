@@ -6,7 +6,7 @@ navbar:
       href: index.html
     - text: "Topics"
       menu:
-        - text: "Introduction"
+        - text: "Project Overview: Introduction, Methods, Materials and Conclusion"
           href: Intro.html
         - text: "Forest Cover Gain Maps"
           href: TreeCoverGain.html
@@ -16,8 +16,7 @@ navbar:
           href: LMI.html
         - text: "Carbon Emission and Tree Cover Regressions"
           href: CarbonF.html
-        - text: "Methods, Results, Disscusion, and Conclusion "
-          href: MM.html  
+        
    
     
   right:

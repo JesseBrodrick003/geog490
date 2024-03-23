@@ -14,7 +14,7 @@ html_document:
     collapsed: no
 ---
 
-# 20 year Tree Cover Gain Mapping Anlaysis with Global Forest Watch Data 
+## 20 year Tree Cover Gain Mapping Anlaysis with Global Forest Watch Data 
 
 ### Reading in libraries and dataset
 ```{r}
@@ -34,7 +34,7 @@ df <- read_csv("/Users/jessebrodrick/Desktop/490Pro/data/GlblFW/CTCL1.csv")
 ```
 
 
-## Basemap and projection
+### Basemap and projection
 ```{r}
 
 # Options to return tigris objects as sf objects
@@ -78,9 +78,8 @@ ggplot() +
   labs(title = "PNW")
 
 ```
-## Subset and merge Global Forest Watch data and projected US Census boundaries
+### Subset and merge Global Forest Watch data and projected US Census boundaries
 
-### Global Forest watch provides thresholds or amount of tree canopy coverage (density of 30m resolution) for 0, 10, 20, 30, 50, and 75 percent for 20 years of forest cover gain/loss in hecatares. 
 ```{r}
 # Subset data based on the western states with a canopy density threshold of 50
 df_subset <- df[df$subnational1 %in% western_states, ] %>% 
@@ -104,7 +103,7 @@ summary(wus_gbl_merge$gain_2000_2020_ha)
  
   
 ```
-###Plotting Tree Cover Gain at 50% Canopy Cover Threshold over 20 years
+### Plotting Tree Cover Gain at 50% Canopy Cover Threshold over 20 years
 ```{r}
 # Classifying data for visualization using natural jenks method
 ctpnts <- classIntervals(wus_gbl_merge$gain_2000_2020_ha, n = 6, style = "jenks")
@@ -121,7 +120,7 @@ ggplot(wus_gbl_merge) +
                        labels = rev(paste(round(ctpnts$brks[-length(ctpnts$brks)], 1), "to",
                                       round(ctpnts$brks[-1], 1))),
                        limits = range(wus_gbl_merge$gain_2000_2020_ha)) +
-  labs(title = "20 Year Primary Forest Tree Cover Gain (50% threshold)", fill = "Gain (hectares)") +
+  labs(title = "20 Year Forest Cover Gain (50% threshold)", fill = "Gain (hectares)") +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"),
         legend.position = "right",
         legend.background = element_rect(fill = "white", colour = "black"),
@@ -134,7 +133,9 @@ ggplot(wus_gbl_merge) +
 
 
 ```
-## Assess spatial distribution of Canopy Cover Gain and Descriptive statistics
+
+
+### Assess spatial distribution of Canopy Cover Gain and Descriptive statistics
 
 ```{r}
 # Summary statistics
@@ -188,7 +189,7 @@ ggplot(top_counties_gain, aes(x = reorder(region, Total_Gain), y = Total_Gain)) 
   geom_bar(stat = "identity") +
   coord_flip() + 
   theme_minimal() +
-  labs(title = "Top 10 Counties by Total Tree Cover Gain (2001-2022)",
+  labs(title = "Top 10 Counties by Total Tree Cover Gain (2000-2022)",
        x = "County",
        y = "Total Tree Cover Gain (ha)")
 ```
