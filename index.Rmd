@@ -2,7 +2,7 @@
 title: "Home"
 output: html_document
 ---
-<img src="/Users/jessebrodrick/Desktop/490Pro/GEOG490/gfw.jpg"  width="500"/>
+
 
 ## Project web page for GEOG 4/595 *R for Earth-System Science* 
 
